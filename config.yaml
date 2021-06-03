@@ -2,33 +2,29 @@ baseurl: https://example.com
 languageCode: en-us
 defaultContentLanguage: en
 isMultilingual: no
-title: Call me Sam
+title: rich posert - grad
 theme: hugo-theme-sam
-pygmentsStyle: monokai
+pygmentsStyle: native
 pygmentsCodefences: yes
 params:
   dateform: Mon Jan 02, 2006
   dateformfull: Mon Jan 2 2006 15:04:05 EST
-  description: A new Hugo site.
+  description: rich posert's personal site.
   favicon: sam.ico
-  footerText: Call me Sam, a theme for Hugo.
+  footerText: rich is a bad grad student.
   homepage: main
   images: tn.png
   mainMenu:
     - link: posts
       text: posts
-    - link: gallery
-      text: gallery
-    - link: portfolio
-      text: portfolio
     - link: about
-      text: who is sam?
-  title: Call me Sam
+      text: who is rich?
+  title: rich posert - grad
   videoBackground:
     overlay: rgba(0, 0, 0, 0.4)
     sources:
-      - poster: /background.png
-        source: /sample_video.mp4
+      - poster: /cispus.png
+        source: /cispus.mp4
         type: video/mp4
 imaging:
   quality: 75
