@@ -18,11 +18,11 @@ biochemistry, specifically cryoEM of ion channels. Check out our
 
 In addition to protein biochemistry, I enjoy writing scripts to help make repeat
 analysis easier. If you don't ask [a national lab](https://twitter.com/CryoEM_PNCC/status/1375582415326879746),
-my only notable work is [Appia](https://github.com/PlethoraChutney/Appia)
+my only notable work is [Appia](https://github.com/PlethoraChutney/Appia),
 a chromatography analysis package which collates and plots data from Waters, Shimadzu, and
 AKTA instruments with a web interface that you can access from anywhere.
 I got tired of copying files and making .csvs manually! Check out a [live
-web demo](traces.baconguislab.com)! I
+web demo](https://traces.baconguislab.com)! I
 also enjoy reading, cycling, backpacking, and cooking. My goal this year is to
-cook my way through a new cookbook! But I'm not making great progress on that.
+cook my way through a new cookbook!
 
