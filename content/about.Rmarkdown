@@ -22,7 +22,18 @@ my only notable work is [Appia](https://github.com/PlethoraChutney/Appia),
 a chromatography analysis package which collates and plots data from Waters, Shimadzu, and
 AKTA instruments with a web interface that you can access from anywhere.
 I got tired of copying files and making .csvs manually! Check out a [live
-web demo](https://traces.baconguislab.com)! I
-also enjoy reading, cycling, backpacking, and cooking. My goal this year is to
+web demo](https://traces.baconguislab.com)! 
+
+I also was one of the first organizers for our union, [Graduate Researchers United](https://gradresearchersunited.org).
+I went on to become a lead organizer, then a member of the bargaining team, and
+a member of the first (*de facto*) executive board. I am very passionate about
+unions, and I think they're one of the few levers of power held firmly in our hands.
+If you want to organize, please send me an email or a tweet, or an anonymous letter.
+I will always make time to discuss strategy, challenges, and benefits.
+
+I
+also enjoy reading, cycling, backpacking, and cooking. The video on the main page
+of this site is one I took while backpacking up by the Goat Rocks in the Gifford
+Pinchot National Forest. My goal this year is to
 cook my way through a new cookbook!
 
