@@ -8,7 +8,7 @@ tags: []
 showDate: no
 ---
 
-![test](rich_main_smaller.jpg)
+![What I look like drinking a beer in the Alvord desert](/img/rich_main_smaller.jpg)
 
 I'm a graduate student at OHSU, in the [Baconguis lab](https://www.ohsu.edu/xd/research/centers-institutes/vollum/faculty/baconguislab.cfm).
 We work on structural

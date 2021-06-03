@@ -23,8 +23,8 @@ params:
   videoBackground:
     overlay: rgba(0, 0, 0, 0.4)
     sources:
-      - poster: /cispus.png
-        source: /cispus.mp4
+      - poster: /img/cispus.png
+        source: /video/cispus.mp4
         type: video/mp4
 imaging:
   quality: 75

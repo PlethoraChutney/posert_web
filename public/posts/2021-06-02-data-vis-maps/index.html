@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+
+<meta name="description" content="rich posert&#39;s personal site.">
+<title>
+    Data Vis - Maps - rich posert - grad
+</title>
+
+
+<link rel="shortcut icon" href="/sam.ico">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.min.c5514d3530979d291f3497facc20da1cec870028dbc2a3630b64bab8721bbe49.css" integrity="sha256-xVFNNTCXnSkfNJf6zCDaHOyHACjbwqNjC2S6uHIbvkk=" crossorigin="anonymous" media="screen">
+
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic">
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/116"/>
+
+<meta name="twitter:title" content="Data Vis - Maps"/>
+<meta name="twitter:description" content="For this assignment we were meant to investigate some geographic data and plot it on a map of Portland. I was particularly interested in the housing data, and wondered if the housing density would be interesting.
+The first step is reading in Portland GIS&rsquo;s data and reading in housing data.
+pdx_boundaries &lt;- st_read(&#39;data/Neighborhoods__Regions_-shp/&#39;) river_boundaries &lt;- st_read( &#39;data/Willamette_Columbia_River_Ordinary_High_Water-shp/&#39; ) housing &lt;- read_excel( &#34;data/Census_2010_Data_Cleanedup.xlsx&#34;, sheet = &#34;Census_2010_Neighborhoods&#34;, range = &#39;A6:CW101&#39; ) %&gt;% select( &#39;Neighborhood&#39; = starts_with(&#39;NEIGHBOR&#39;), &#39;Total_Housing&#39; = &#39;H0010001&#39;, &#39;Area&#39; = &#39;AREALAND&#39; ) %&gt;% mutate(Area = Area/2589988) %&gt;% mutate(Housing_Per_Mi = Total_Housing/Area) # rename census neighborhoods housing &lt;- housing %&gt;% mutate(Neighborhood=recode(Neighborhood, &#34;ARGAY&#34; = &#34;ARGAY TERRACE&#34;, &#34;BROOKLYN&#34; = &#34;BROOKLYN ACTION CORPS&#34;, &#34;BUCKMAN&#34; = &#34;BUCKMAN COMMUNITY ASSOCIATION&#34;, &#34;CENTENNIAL&#34; = &#34;CENTENNIAL COMMUNITY ASSOCIATION&#34;, &#34;CULLY&#34; = &#34;CULLY ASSOCIATION OF NEIGHBORS&#34;, &#34;CENTENNIAL&#34; = &#34;CENTENNIAL COMMUNITY ASSOCIATION&#34;, &#34;DOWNTOWN&#34; = &#34;PORTLAND DOWNTOWN&#34;, &#34;GOOSE HOLLOW&#34; = &#34;GOOSE HOLLOW FOOTHILLS LEAGUE&#34;, &#34;HAYDEN ISLAND&#34; = &#34;HAYDEN ISLAND NEIGHBORHOOD NETWORK&#34;, &#34;HOSFORD-ABERNETHY&#34; = &#34;HOSFORD-ABERNETHY NEIGHBORHOOD DISTRICT ASSN."/>
+
+<meta property="og:title" content="Data Vis - Maps" />
+<meta property="og:description" content="For this assignment we were meant to investigate some geographic data and plot it on a map of Portland. I was particularly interested in the housing data, and wondered if the housing density would be interesting.
+The first step is reading in Portland GIS&rsquo;s data and reading in housing data.
+pdx_boundaries &lt;- st_read(&#39;data/Neighborhoods__Regions_-shp/&#39;) river_boundaries &lt;- st_read( &#39;data/Willamette_Columbia_River_Ordinary_High_Water-shp/&#39; ) housing &lt;- read_excel( &#34;data/Census_2010_Data_Cleanedup.xlsx&#34;, sheet = &#34;Census_2010_Neighborhoods&#34;, range = &#39;A6:CW101&#39; ) %&gt;% select( &#39;Neighborhood&#39; = starts_with(&#39;NEIGHBOR&#39;), &#39;Total_Housing&#39; = &#39;H0010001&#39;, &#39;Area&#39; = &#39;AREALAND&#39; ) %&gt;% mutate(Area = Area/2589988) %&gt;% mutate(Housing_Per_Mi = Total_Housing/Area) # rename census neighborhoods housing &lt;- housing %&gt;% mutate(Neighborhood=recode(Neighborhood, &#34;ARGAY&#34; = &#34;ARGAY TERRACE&#34;, &#34;BROOKLYN&#34; = &#34;BROOKLYN ACTION CORPS&#34;, &#34;BUCKMAN&#34; = &#34;BUCKMAN COMMUNITY ASSOCIATION&#34;, &#34;CENTENNIAL&#34; = &#34;CENTENNIAL COMMUNITY ASSOCIATION&#34;, &#34;CULLY&#34; = &#34;CULLY ASSOCIATION OF NEIGHBORS&#34;, &#34;CENTENNIAL&#34; = &#34;CENTENNIAL COMMUNITY ASSOCIATION&#34;, &#34;DOWNTOWN&#34; = &#34;PORTLAND DOWNTOWN&#34;, &#34;GOOSE HOLLOW&#34; = &#34;GOOSE HOLLOW FOOTHILLS LEAGUE&#34;, &#34;HAYDEN ISLAND&#34; = &#34;HAYDEN ISLAND NEIGHBORHOOD NETWORK&#34;, &#34;HOSFORD-ABERNETHY&#34; = &#34;HOSFORD-ABERNETHY NEIGHBORHOOD DISTRICT ASSN." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/posts/2021-06-02-data-vis-maps/" /><meta property="og:image" content="https://example.com/116"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-06-02T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2021-06-02T00:00:00&#43;00:00" /><meta property="og:site_name" content="rich posert - grad" />
+
+
+
+    
+
+    
+    
+    
+    <title>
+        
+        Data Vis - Maps
+        
+    </title>
+</head>
+
+<body>
+    
+    
+    <header class="wrap flex-container">
+        <h1>Data Vis - Maps</h1>
+    </header>
+    
+    <main class="wrap">
+        
+<div class="flex-container">
+    <aside role="complementary">
+        Wed Jun 02, 2021 &#183; 362 words
+        <div class="tag-container">
+            
+            
+            <span class="tag">
+                <a href="/tags/classwork/">
+                    classwork
+                </a>
+            </span>
+            
+            
+        </div>
+    </aside>
+    <hr />
+    <article role="article">
+        <p>For this assignment we were meant to investigate
+some geographic data and plot it on a map of Portland.
+I was particularly interested in the housing data,
+and wondered if the housing density would be interesting.</p>
+<p>The first step is reading in Portland GIS&rsquo;s data and reading
+in housing data.</p>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">pdx_boundaries &lt;- <span style="color:#447fcf">st_read</span>(<span style="color:#ed9d13">&#39;data/Neighborhoods__Regions_-shp/&#39;</span>)
+river_boundaries &lt;- <span style="color:#447fcf">st_read</span>(
+  <span style="color:#ed9d13">&#39;data/Willamette_Columbia_River_Ordinary_High_Water-shp/&#39;</span>
+)
+
+housing &lt;- <span style="color:#447fcf">read_excel</span>(
+  <span style="color:#ed9d13">&#34;data/Census_2010_Data_Cleanedup.xlsx&#34;</span>,
+  sheet = <span style="color:#ed9d13">&#34;Census_2010_Neighborhoods&#34;</span>,
+  range = <span style="color:#ed9d13">&#39;A6:CW101&#39;</span>
+) %&gt;% 
+  <span style="color:#447fcf">select</span>(
+    <span style="color:#ed9d13">&#39;Neighborhood&#39;</span> = <span style="color:#447fcf">starts_with</span>(<span style="color:#ed9d13">&#39;NEIGHBOR&#39;</span>),
+    <span style="color:#ed9d13">&#39;Total_Housing&#39;</span> = <span style="color:#ed9d13">&#39;H0010001&#39;</span>,
+    <span style="color:#ed9d13">&#39;Area&#39;</span> = <span style="color:#ed9d13">&#39;AREALAND&#39;</span>
+  ) %&gt;% 
+  <span style="color:#447fcf">mutate</span>(Area = Area/<span style="color:#3677a9">2589988</span>) %&gt;% 
+  <span style="color:#447fcf">mutate</span>(Housing_Per_Mi = Total_Housing/Area)
+
+<span style="color:#999;font-style:italic"># rename census neighborhoods</span>
+housing &lt;- housing %&gt;% <span style="color:#447fcf">mutate</span>(Neighborhood=<span style="color:#447fcf">recode</span>(Neighborhood,
+  <span style="color:#ed9d13">&#34;ARGAY&#34;</span> = <span style="color:#ed9d13">&#34;ARGAY TERRACE&#34;</span>,
+  <span style="color:#ed9d13">&#34;BROOKLYN&#34;</span> = <span style="color:#ed9d13">&#34;BROOKLYN ACTION CORPS&#34;</span>,
+  <span style="color:#ed9d13">&#34;BUCKMAN&#34;</span> = <span style="color:#ed9d13">&#34;BUCKMAN COMMUNITY ASSOCIATION&#34;</span>,
+  <span style="color:#ed9d13">&#34;CENTENNIAL&#34;</span> = <span style="color:#ed9d13">&#34;CENTENNIAL COMMUNITY ASSOCIATION&#34;</span>,
+  <span style="color:#ed9d13">&#34;CULLY&#34;</span> = <span style="color:#ed9d13">&#34;CULLY ASSOCIATION OF NEIGHBORS&#34;</span>,
+  <span style="color:#ed9d13">&#34;CENTENNIAL&#34;</span> = <span style="color:#ed9d13">&#34;CENTENNIAL COMMUNITY ASSOCIATION&#34;</span>,
+  <span style="color:#ed9d13">&#34;DOWNTOWN&#34;</span> = <span style="color:#ed9d13">&#34;PORTLAND DOWNTOWN&#34;</span>,
+  <span style="color:#ed9d13">&#34;GOOSE HOLLOW&#34;</span> = <span style="color:#ed9d13">&#34;GOOSE HOLLOW FOOTHILLS LEAGUE&#34;</span>,
+  <span style="color:#ed9d13">&#34;HAYDEN ISLAND&#34;</span> = <span style="color:#ed9d13">&#34;HAYDEN ISLAND NEIGHBORHOOD NETWORK&#34;</span>,
+  <span style="color:#ed9d13">&#34;HOSFORD-ABERNETHY&#34;</span> = <span style="color:#ed9d13">&#34;HOSFORD-ABERNETHY NEIGHBORHOOD DISTRICT ASSN.&#34;</span>,
+  <span style="color:#ed9d13">&#34;IRVINGTON&#34;</span> = <span style="color:#ed9d13">&#34;IRVINGTON COMMUNITY ASSOCIATION&#34;</span>,
+  <span style="color:#ed9d13">&#34;LLOYD DISTRICT&#34;</span> = <span style="color:#ed9d13">&#34;LLOYD DISTRICT COMMUNITY ASSOCIATION&#34;</span>,
+  <span style="color:#ed9d13">&#34;NORTHWEST DISTRICT&#34;</span> = <span style="color:#ed9d13">&#34;NORTHWEST DISTRICT ASSOCIATION&#34;</span>,
+  <span style="color:#ed9d13">&#34;OLD TOWN-CHINATOWN&#34;</span> = <span style="color:#ed9d13">&#34;OLD TOWN COMMUNITY ASSOCIATION&#34;</span>,
+  <span style="color:#ed9d13">&#34;PARKROSE HEIGHTS&#34;</span> = <span style="color:#ed9d13">&#34;PARKROSE HEIGHTS ASSOCIATION OF NEIGHBORS&#34;</span>,
+  <span style="color:#ed9d13">&#34;PEARL&#34;</span> = <span style="color:#ed9d13">&#34;PEARL DISTRICT&#34;</span>,
+  <span style="color:#ed9d13">&#34;SABIN&#34;</span> = <span style="color:#ed9d13">&#34;SABIN COMMUNITY ASSOCIATION&#34;</span>,
+  <span style="color:#ed9d13">&#34;SELLWOOD-MORELAND&#34;</span> = <span style="color:#ed9d13">&#34;SELLWOOD-MORELAND IMPROVEMENT LEAGUE&#34;</span>,
+  <span style="color:#ed9d13">&#34;SOUTHWEST HILLS&#34;</span> = <span style="color:#ed9d13">&#34;SOUTHWEST HILLS RESIDENTIAL LEAGUE&#34;</span>,
+  <span style="color:#ed9d13">&#34;SUMNER&#34;</span> = <span style="color:#ed9d13">&#34;SUMNER ASSOCIATION OF NEIGHBORS&#34;</span>,
+  <span style="color:#ed9d13">&#34;SUNDERLAND&#34;</span> = <span style="color:#ed9d13">&#34;SUNDERLAND ASSOCIATION OF NEIGHBORS&#34;</span>,
+  <span style="color:#ed9d13">&#34;WILKES&#34;</span> = <span style="color:#ed9d13">&#34;WILKES COMMUNITY GROUP&#34;</span>
+))
+
+boundaries_with_housing &lt;- <span style="color:#447fcf">left_join</span>(
+    pdx_boundaries, 
+    housing, 
+    by=<span style="color:#447fcf">c</span>(<span style="color:#ed9d13">&#34;NAME&#34;</span>=<span style="color:#ed9d13">&#34;Neighborhood&#34;</span>)
+  ) %&gt;% 
+  <span style="color:#447fcf">arrange</span>(Housing_Per_Mi)
+</code></pre></div><p>Once the data is all there, all that&rsquo;s left is to find a pleasing break point
+for the color fills and making the map!</p>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">num_breaks &lt;- <span style="color:#3677a9">5</span>
+
+df &lt;- boundaries_with_housing %&gt;% 
+  <span style="color:#447fcf">rename</span>(<span style="color:#ed9d13">&#39;hpm&#39;</span> = <span style="color:#ed9d13">&#39;Housing_Per_Mi&#39;</span>)
+  
+jenks.interval &lt;- <span style="color:#447fcf">classIntervals</span>(
+  df$hpm,
+  n = num_breaks,
+  style = <span style="color:#ed9d13">&#39;jenks&#39;</span>
+)$brks
+
+boundaries_with_housing$hpm.jenks = <span style="color:#447fcf">cut</span>(
+  boundaries_with_housing$Housing_Per_Mi,
+  breaks = jenks.interval,
+  include.lowest = <span style="color:#6ab825;font-weight:bold">TRUE</span>
+)
+
+paul_tol &lt;- <span style="color:#447fcf">c</span>(
+  <span style="color:#ed9d13">&#39;#ffffe5&#39;</span>,
+  <span style="color:#ed9d13">&#39;#fff7bc&#39;</span>,
+  <span style="color:#ed9d13">&#39;#fee391&#39;</span>,
+  <span style="color:#ed9d13">&#39;#fec44f&#39;</span>,
+  <span style="color:#ed9d13">&#39;#fb9a29&#39;</span>,
+  <span style="color:#ed9d13">&#39;#ec7014&#39;</span>,
+  <span style="color:#ed9d13">&#39;#cc4c02&#39;</span>,
+  <span style="color:#ed9d13">&#39;#993404&#39;</span>,
+  <span style="color:#ed9d13">&#39;#662506&#39;</span>
+)
+
+boundaries_with_housing %&gt;% 
+  <span style="color:#447fcf">ggplot</span>() +
+  <span style="color:#447fcf">theme_minimal</span>() +
+  <span style="color:#447fcf">geom_sf</span>(<span style="color:#447fcf">aes</span>(fill = hpm.jenks)) +
+  <span style="color:#447fcf">geom_sf</span>(data=river_boundaries, fill=<span style="color:#ed9d13">&#34;#3f90df&#34;</span>, size=<span style="color:#3677a9">0.0</span>) +
+  <span style="color:#447fcf">scale_fill_manual</span>(
+    values = paul_tol,
+    na.value = <span style="color:#ed9d13">&#39;#888888&#39;</span>,
+    name = <span style="color:#ed9d13">&#39;Housing per mi²&#39;</span>
+  ) +
+  <span style="color:#447fcf">ggtitle</span>(<span style="color:#ed9d13">&#39;Jenks breaks&#39;</span>)
+<span style="color:#447fcf">ggsave</span>(<span style="color:#ed9d13">&#39;jenks_breaks.png&#39;</span>)
+</code></pre></div><p><p style="text-align:center;">
+    <img src="jenks_breaks.png" alt="The final map of Portland housing density"  />
+</p>
+</p>
+<p>I am curious why the small corner just north of the bend in I-84
+(Maywood Park) is never filled in in these maps, but also isn&rsquo;t marked as NA!</p>
+
+    </article>
+</div>
+
+
+        
+<nav role="navigation" class="flex-container bottom-menu">
+    
+<hr />
+<p>
+
+
+    
+        <a href="/posts">back</a>
+        
+            &#183;
+        
+    
+
+    
+        
+            <a href="/posts">posts</a>
+        
+    
+    
+        
+            &#183; 
+            <a href="/about">who is rich?</a>
+        
+    
+    
+    
+        &#183; 
+        <a href="/">
+            main
+        </a>
+    
+
+</p>
+</nav>
+
+    </main>
+    
+    <footer class="flex-container footer">rich is a bad grad student.
+</footer>
+    
+    
+</body>
+
+</html>
