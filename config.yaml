@@ -4,7 +4,7 @@ defaultContentLanguage: en
 isMultilingual: no
 title: rich posert - grad
 theme: hugo-theme-sam
-pygmentsStyle: native
+pygmentsStyle: 'vim'
 pygmentsCodefences: yes
 params:
   dateform: Mon Jan 02, 2006

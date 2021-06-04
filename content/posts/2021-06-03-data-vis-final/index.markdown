@@ -303,7 +303,7 @@ span the course of six years, so I'm comfortable using those durations to calcul
 
 Let's revisit travel modes, now that we know about durations. I expect things will
 look more or less similar, since durations seem to clump together around the two
-second mark.
+minute mark.
 
 ```r
 loc_df %>% 
@@ -321,13 +321,14 @@ loc_df %>%
 ![Travel mode durations](mode_duration.png)
 
 The total time covered by these samples is only about an hour! Clearly, Google
-mostly does not know what type of transportation I'm using.
+mostly does not know what type of transportation I'm using, even accounting
+for the fact that most of the samples are "STILL", which is filtered here.
 
 # Final Plot
 
 I think for my final final plot, I'd like to make a choropleth map of what
-neighborhoods I spend the most time in. For this, we'll need the shape files
-from our Maps lab, and to make sure everything lines up. I'll just use the data
+neighborhoods I spend the most time in. For this, we'll need shape files for
+Portland's neighborhoods. I'll just use the data
 since I graduated college, both because that would vastly skew the data to Reed,
 and also because the sampling rate stabilizes quite a bit after 2015.
 
