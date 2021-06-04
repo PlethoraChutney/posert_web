@@ -8,6 +8,10 @@ tags: []
 showDate: no
 ---
 
+My name is Rich Posert. I enjoy reading, cycling, backpacking, and cooking. The video on the main page
+of this site is one I took while backpacking up by the Goat Rocks in the Gifford
+Pinchot National Forest.
+
 ![What I look like drinking a beer in the Alvord desert](/img/rich_main_smaller.jpg)
 
 I'm a graduate student at OHSU, in the [Baconguis lab](https://www.ohsu.edu/xd/research/centers-institutes/vollum/faculty/baconguislab.cfm).
@@ -30,10 +34,4 @@ a member of the first (*de facto*) executive board. I am very passionate about
 unions, and I think they're one of the few levers of power held firmly in our hands.
 If you want to organize, please send me an email or a tweet, or an anonymous letter.
 I will always make time to discuss strategy, challenges, and benefits.
-
-I
-also enjoy reading, cycling, backpacking, and cooking. The video on the main page
-of this site is one I took while backpacking up by the Goat Rocks in the Gifford
-Pinchot National Forest. My goal this year is to
-cook my way through a new cookbook!
 
