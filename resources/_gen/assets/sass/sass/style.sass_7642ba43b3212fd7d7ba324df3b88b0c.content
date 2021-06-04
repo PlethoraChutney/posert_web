@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto+Mono&display=swap");
 * {
   margin: 0;
   padding: 0;
@@ -169,7 +169,7 @@ article {
     border: none; }
   article code {
     font-size: 0.9rem;
-    font-family: 'Source Code Pro', monospace;
+    font-family: 'Roboto Mono', monospace;
     padding: 0.1rem;
     border-radius: 3px;
     border: 1px solid #cccccc; }
