@@ -14,10 +14,20 @@ params:
   footerText: rich is a bad grad student.
   homepage: main
   mainMenu:
-    - link: posts
-      text: posts
     - link: about
       text: who is rich?
+    - link: posts
+      text: posts
+    - link: mailto:rich@posertinlab.com
+      text: email
+    - link: https://twitter.com/posertinlab
+      text: twitter
+    - link: https://github.com/plethorachutney
+      text: github
+    - link: https://orcid.org/0000-0001-9010-2104
+      text: orcid
+    - link: https://keybase.io/plethorachutney
+      text: keybase
   title: rich posert - grad
   videoBackground:
     overlay: rgba(0, 0, 0, 0.4)
