@@ -6,15 +6,24 @@
     <description>Recent content on rich posert - grad</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 02 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 03 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Data Vis - Final</title>
+      <link>https://example.com/posts/2021-06-03-data-vis-final/</link>
+      <pubDate>Thu, 03 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/posts/2021-06-03-data-vis-final/</guid>
+      <description>Project Concept&amp;nbsp;¶ For this project, I&amp;rsquo;d like to analyze my location data. In the course of tracking us 24/7 to sell us ads based on places we just were, Google keeps high-resolution information about our location on their servers. You can request a download of this (and tons of other data) using Google Takeout. I think taking a look at what data Google has (more specifically, what data Google publicly admits it has) and putting this together in a format that the general public might consume, perhaps browsing through twitter, could get people to think a bit more deeply about how surveilled we are.</description>
+    </item>
+    
     <item>
       <title>About</title>
       <link>https://example.com/about/</link>
       <pubDate>Wed, 02 Jun 2021 00:00:00 +0000</pubDate>
       
       <guid>https://example.com/about/</guid>
-      <description>I&amp;rsquo;m a graduate student at OHSU, in the Baconguis lab. We work on structural biochemistry, specifically cryoEM of ion channels. Check out our first and second papers on the structure and function of ENaC!
-In addition to protein biochemistry, I enjoy writing scripts to help make repeat analysis easier. If you don&amp;rsquo;t ask a national lab, my only notable work is Appia, a chromatography analysis package which collates and plots data from Waters, Shimadzu, and AKTA instruments with a web interface that you can access from anywhere.</description>
+      <description>My name is Rich Posert. I enjoy reading, cycling, backpacking, and cooking. The video on the main page of this site is one I took while backpacking up by the Goat Rocks in the Gifford Pinchot National Forest.
+I&amp;rsquo;m a graduate student at OHSU, in the Baconguis lab. We work on structural biochemistry, specifically cryoEM of ion channels. Check out our first and second papers on the structure and function of ENaC!</description>
     </item>
     
     <item>

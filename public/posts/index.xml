@@ -8,6 +8,15 @@
     <language>en-us</language>
     <lastBuildDate>Wed, 02 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://example.com/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Data Vis - Final</title>
+      <link>https://example.com/posts/2021-06-03-data-vis-final/</link>
+      <pubDate>Thu, 03 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/posts/2021-06-03-data-vis-final/</guid>
+      <description>Project Concept&amp;nbsp;¶ For this project, I&amp;rsquo;d like to analyze my location data. In the course of tracking us 24/7 to sell us ads based on places we just were, Google keeps high-resolution information about our location on their servers. You can request a download of this (and tons of other data) using Google Takeout. I think taking a look at what data Google has (more specifically, what data Google publicly admits it has) and putting this together in a format that the general public might consume, perhaps browsing through twitter, could get people to think a bit more deeply about how surveilled we are.</description>
+    </item>
+    
+    <item>
       <title>Data Vis - Hot Dogs</title>
       <link>https://example.com/posts/2021-06-02-data-vis-hot-dogs/</link>
       <pubDate>Wed, 02 Jun 2021 00:00:00 +0000</pubDate>

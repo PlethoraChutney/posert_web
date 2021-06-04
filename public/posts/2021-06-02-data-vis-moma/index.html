@@ -16,7 +16,7 @@
 </title>
 
 
-<link rel="shortcut icon" href="/sam.ico">
+<link rel="shortcut icon" href="/posert.ico">
 
 
 
@@ -39,9 +39,7 @@
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic">
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://example.com/116"/>
-
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Data Vis - MoMA"/>
 <meta name="twitter:description" content="This was an early assignment, just getting used to working with data in R. Nevertheless, I did a fun little investigation of the ratios of paintings, and if artists had a preferred ratio (or at least, if the curators of MoMA do).
 First I load the data and flip all paintings to be taller than they are wide.
@@ -52,7 +50,7 @@ library(tidyverse) library(ggplot2) moma &lt;- read_csv(&#39;data/artworks-clean
 First I load the data and flip all paintings to be taller than they are wide.
 library(tidyverse) library(ggplot2) moma &lt;- read_csv(&#39;data/artworks-cleaned.csv&#39;) moma_symm &lt;- moma %&gt;% mutate(symm_width = if_else(width_cm &lt; height_cm, width_cm, height_cm), symm_height = if_else(width_cm &lt; height_cm, height_cm, width_cm)) moma_symm %&gt;% mutate(longer_than_wide = symm_height &lt;= symm_width) %&gt;% ggplot(aes(x = symm_width, y = symm_height, color = longer_than_wide)) &#43; theme_minimal() &#43; geom_point(alpha = 0." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://example.com/posts/2021-06-02-data-vis-moma/" /><meta property="og:image" content="https://example.com/116"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://example.com/posts/2021-06-02-data-vis-moma/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-06-02T00:00:00&#43;00:00" />
 <meta property="article:modified_time" content="2021-06-02T00:00:00&#43;00:00" /><meta property="og:site_name" content="rich posert - grad" />
 
@@ -101,26 +99,26 @@ Nevertheless, I did a fun little investigation of the ratios of paintings,
 and if artists had a preferred ratio (or at least, if the curators of MoMA
 do).</p>
 <p>First I load the data and flip all paintings to be taller than they are wide.</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#447fcf">library</span>(tidyverse)
-<span style="color:#447fcf">library</span>(ggplot2)
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">library(tidyverse)
+library(ggplot2)
 
-moma &lt;- <span style="color:#447fcf">read_csv</span>(<span style="color:#ed9d13">&#39;data/artworks-cleaned.csv&#39;</span>)
+moma <span style="color:#39c">&lt;-</span> read_csv(<span style="color:#cd0000">&#39;data/artworks-cleaned.csv&#39;</span>)
 
-moma_symm &lt;-  moma %&gt;% 
-  <span style="color:#447fcf">mutate</span>(symm_width = <span style="color:#447fcf">if_else</span>(width_cm &lt; height_cm, width_cm, height_cm),
-         symm_height = <span style="color:#447fcf">if_else</span>(width_cm &lt; height_cm, height_cm, width_cm))
+moma_symm <span style="color:#39c">&lt;-</span>  moma <span style="color:#39c">%&gt;%</span> 
+  mutate(symm_width <span style="color:#39c">=</span> if_else(width_cm <span style="color:#39c">&lt;</span> height_cm, width_cm, height_cm),
+         symm_height <span style="color:#39c">=</span> if_else(width_cm <span style="color:#39c">&lt;</span> height_cm, height_cm, width_cm))
          
-moma_symm %&gt;% 
-  <span style="color:#447fcf">mutate</span>(longer_than_wide = symm_height &lt;= symm_width) %&gt;% 
-  <span style="color:#447fcf">ggplot</span>(<span style="color:#447fcf">aes</span>(x = symm_width, y = symm_height, color = longer_than_wide)) +
-  <span style="color:#447fcf">theme_minimal</span>() +
-  <span style="color:#447fcf">geom_point</span>(alpha = <span style="color:#3677a9">0.25</span>) +
-  <span style="color:#447fcf">coord_cartesian</span>(xlim = <span style="color:#447fcf">c</span>(<span style="color:#3677a9">0</span>, <span style="color:#3677a9">600</span>), ylim = <span style="color:#447fcf">c</span>(<span style="color:#3677a9">0</span>, <span style="color:#3677a9">400</span>)) +
-  <span style="color:#447fcf">scale_color_manual</span>(values = <span style="color:#447fcf">c</span>(<span style="color:#ed9d13">&#34;#FF9900&#34;</span>, <span style="color:#ed9d13">&#34;#B14CF0&#34;</span>)) +
-  <span style="color:#447fcf">theme</span>(legend.position = <span style="color:#ed9d13">&#39;none&#39;</span>) +
-  <span style="color:#447fcf">xlab</span>(<span style="color:#ed9d13">&#39;Width (cm)&#39;</span>) +
-  <span style="color:#447fcf">ylab</span>(<span style="color:#ed9d13">&#39;Height (cm)&#39;</span>) +
-  <span style="color:#447fcf">ggtitle</span>(<span style="color:#ed9d13">&#39;MoMA Paintings, Just Tall&#39;</span>)
+moma_symm <span style="color:#39c">%&gt;%</span> 
+  mutate(longer_than_wide <span style="color:#39c">=</span> symm_height <span style="color:#39c">&lt;=</span> symm_width) <span style="color:#39c">%&gt;%</span> 
+  ggplot(aes(x <span style="color:#39c">=</span> symm_width, y <span style="color:#39c">=</span> symm_height, color <span style="color:#39c">=</span> longer_than_wide)) <span style="color:#39c">+</span>
+  theme_minimal() <span style="color:#39c">+</span>
+  geom_point(alpha <span style="color:#39c">=</span> <span style="color:#cd00cd">0.25</span>) <span style="color:#39c">+</span>
+  coord_cartesian(xlim <span style="color:#39c">=</span> c(<span style="color:#cd00cd">0</span>, <span style="color:#cd00cd">600</span>), ylim <span style="color:#39c">=</span> c(<span style="color:#cd00cd">0</span>, <span style="color:#cd00cd">400</span>)) <span style="color:#39c">+</span>
+  scale_color_manual(values <span style="color:#39c">=</span> c(<span style="color:#cd0000">&#34;#FF9900&#34;</span>, <span style="color:#cd0000">&#34;#B14CF0&#34;</span>)) <span style="color:#39c">+</span>
+  theme(legend.position <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;none&#39;</span>) <span style="color:#39c">+</span>
+  xlab(<span style="color:#cd0000">&#39;Width (cm)&#39;</span>) <span style="color:#39c">+</span>
+  ylab(<span style="color:#cd0000">&#39;Height (cm)&#39;</span>) <span style="color:#39c">+</span>
+  ggtitle(<span style="color:#cd0000">&#39;MoMA Paintings, Just Tall&#39;</span>)
 </code></pre></div><p><p style="text-align:center;">
     <img src="moma_symm.png" alt="moma_symm"  />
 </p>
@@ -128,12 +126,12 @@ moma_symm %&gt;%
 It does seem that there&rsquo;s a slight preference for a certain line. Using
 a density plot we can do a bit more investigation into what the exact ratio
 might be.</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">moma_symm %&gt;% 
-  <span style="color:#447fcf">mutate</span>(ratio = symm_height/symm_width) %&gt;% 
-  <span style="color:#447fcf">filter</span>(ratio &lt; <span style="color:#3677a9">3</span>) %&gt;% 
-  <span style="color:#447fcf">ggplot</span>(<span style="color:#447fcf">aes</span>(x = ratio)) +
-  <span style="color:#447fcf">geom_density</span>(fill = <span style="color:#ed9d13">&#39;#1f77b4&#39;</span>, color = <span style="color:#ed9d13">&#39;black&#39;</span>) +
-  <span style="color:#447fcf">theme_minimal</span>()
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">moma_symm <span style="color:#39c">%&gt;%</span> 
+  mutate(ratio <span style="color:#39c">=</span> symm_height<span style="color:#39c">/</span>symm_width) <span style="color:#39c">%&gt;%</span> 
+  filter(ratio <span style="color:#39c">&lt;</span> <span style="color:#cd00cd">3</span>) <span style="color:#39c">%&gt;%</span> 
+  ggplot(aes(x <span style="color:#39c">=</span> ratio)) <span style="color:#39c">+</span>
+  geom_density(fill <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;#1f77b4&#39;</span>, color <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;black&#39;</span>) <span style="color:#39c">+</span>
+  theme_minimal()
 </code></pre></div><p><p style="text-align:center;">
     <img src="symm_dens.png" alt="symmetry_density"  />
 </p>
@@ -142,29 +140,29 @@ might be.</p>
 what I know.</p>
 <p>Anyway, we can fit some lines for some of the peaks on the plot of ratios and see
 how close we got. Let&rsquo;s plot a linear fit of the flipped data, too.</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">ratio_model &lt;- moma_symm %&gt;% 
-  <span style="color:#447fcf">select</span>(symm_height, symm_width) %&gt;% 
-  <span style="color:#447fcf">lm</span>(<span style="color:#ed9d13">&#39;symm_height ~ symm_width&#39;</span>, data = .)
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">ratio_model <span style="color:#39c">&lt;-</span> moma_symm <span style="color:#39c">%&gt;%</span> 
+  select(symm_height, symm_width) <span style="color:#39c">%&gt;%</span> 
+  lm(<span style="color:#cd0000">&#39;symm_height ~ symm_width&#39;</span>, data <span style="color:#39c">=</span> .)
   
-moma %&gt;% 
-  <span style="color:#447fcf">filter</span>(width_cm &lt; <span style="color:#3677a9">250</span> &amp; height_cm &lt; <span style="color:#3677a9">250</span>) %&gt;% 
-  <span style="color:#447fcf">mutate</span>(longer_than_wide = height_cm &lt;= width_cm) %&gt;% 
-  <span style="color:#447fcf">ggplot</span>(<span style="color:#447fcf">aes</span>(x = width_cm, y = height_cm)) +
-  <span style="color:#447fcf">theme_minimal</span>() +
-  <span style="color:#447fcf">geom_hex</span>(bins = <span style="color:#3677a9">25</span>) +
-  <span style="color:#447fcf">geom_abline</span>(intercept = <span style="color:#3677a9">0</span>, slope = <span style="color:#3677a9">1.25</span>) +
-  <span style="color:#447fcf">geom_abline</span>(intercept = <span style="color:#3677a9">0</span>, slope = <span style="color:#3677a9">0.8</span>) +
-  <span style="color:#447fcf">geom_abline</span>(intercept = <span style="color:#3677a9">-2.875741</span>, slope = <span style="color:#3677a9">1.448946</span>, color = <span style="color:#ed9d13">&#39;white&#39;</span>) +
-  <span style="color:#447fcf">geom_abline</span>(intercept = <span style="color:#3677a9">-2.875741</span>, slope = <span style="color:#3677a9">1</span>/<span style="color:#3677a9">1.448946</span>, color = <span style="color:#ed9d13">&#39;white&#39;</span>) +
-  <span style="color:#447fcf">scale_fill_viridis_c</span>(<span style="color:#ed9d13">&#39;Number of paintings&#39;</span>) +
-  <span style="color:#447fcf">coord_fixed</span>(xlim = <span style="color:#447fcf">c</span>(<span style="color:#3677a9">0</span>, <span style="color:#3677a9">200</span>), ylim = <span style="color:#447fcf">c</span>(<span style="color:#3677a9">0</span>, <span style="color:#3677a9">200</span>)) +
-  <span style="color:#447fcf">scale_color_manual</span>(values = <span style="color:#447fcf">c</span>(<span style="color:#ed9d13">&#34;#FF9900&#34;</span>, <span style="color:#ed9d13">&#34;#B14CF0&#34;</span>)) +
-  <span style="color:#447fcf">xlab</span>(<span style="color:#ed9d13">&#39;Width (cm)&#39;</span>) +
-  <span style="color:#447fcf">ylab</span>(<span style="color:#ed9d13">&#39;Height (cm)&#39;</span>) +
-  <span style="color:#447fcf">annotate</span>(
-    x = <span style="color:#3677a9">0</span>, y = <span style="color:#3677a9">168</span>, hjust = <span style="color:#3677a9">0</span>,
-    geom = <span style="color:#ed9d13">&#39;text&#39;</span>, label = <span style="color:#ed9d13">&#39;White: lm fit\nBlack: estimated from\ndensity plot&#39;</span>) +
-  <span style="color:#447fcf">ggtitle</span>(<span style="color:#ed9d13">&#39;MoMA Paintings, and Their Preferred Ratios&#39;</span>)
+moma <span style="color:#39c">%&gt;%</span> 
+  filter(width_cm <span style="color:#39c">&lt;</span> <span style="color:#cd00cd">250</span> <span style="color:#39c">&amp;</span> height_cm <span style="color:#39c">&lt;</span> <span style="color:#cd00cd">250</span>) <span style="color:#39c">%&gt;%</span> 
+  mutate(longer_than_wide <span style="color:#39c">=</span> height_cm <span style="color:#39c">&lt;=</span> width_cm) <span style="color:#39c">%&gt;%</span> 
+  ggplot(aes(x <span style="color:#39c">=</span> width_cm, y <span style="color:#39c">=</span> height_cm)) <span style="color:#39c">+</span>
+  theme_minimal() <span style="color:#39c">+</span>
+  geom_hex(bins <span style="color:#39c">=</span> <span style="color:#cd00cd">25</span>) <span style="color:#39c">+</span>
+  geom_abline(intercept <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>, slope <span style="color:#39c">=</span> <span style="color:#cd00cd">1.25</span>) <span style="color:#39c">+</span>
+  geom_abline(intercept <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>, slope <span style="color:#39c">=</span> <span style="color:#cd00cd">0.8</span>) <span style="color:#39c">+</span>
+  geom_abline(intercept <span style="color:#39c">=</span> <span style="color:#cd00cd">-2.875741</span>, slope <span style="color:#39c">=</span> <span style="color:#cd00cd">1.448946</span>, color <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;white&#39;</span>) <span style="color:#39c">+</span>
+  geom_abline(intercept <span style="color:#39c">=</span> <span style="color:#cd00cd">-2.875741</span>, slope <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span><span style="color:#39c">/</span><span style="color:#cd00cd">1.448946</span>, color <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;white&#39;</span>) <span style="color:#39c">+</span>
+  scale_fill_viridis_c(<span style="color:#cd0000">&#39;Number of paintings&#39;</span>) <span style="color:#39c">+</span>
+  coord_fixed(xlim <span style="color:#39c">=</span> c(<span style="color:#cd00cd">0</span>, <span style="color:#cd00cd">200</span>), ylim <span style="color:#39c">=</span> c(<span style="color:#cd00cd">0</span>, <span style="color:#cd00cd">200</span>)) <span style="color:#39c">+</span>
+  scale_color_manual(values <span style="color:#39c">=</span> c(<span style="color:#cd0000">&#34;#FF9900&#34;</span>, <span style="color:#cd0000">&#34;#B14CF0&#34;</span>)) <span style="color:#39c">+</span>
+  xlab(<span style="color:#cd0000">&#39;Width (cm)&#39;</span>) <span style="color:#39c">+</span>
+  ylab(<span style="color:#cd0000">&#39;Height (cm)&#39;</span>) <span style="color:#39c">+</span>
+  annotate(
+    x <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>, y <span style="color:#39c">=</span> <span style="color:#cd00cd">168</span>, hjust <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>,
+    geom <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;text&#39;</span>, label <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;White: lm fit\nBlack: estimated from\ndensity plot&#39;</span>) <span style="color:#39c">+</span>
+  ggtitle(<span style="color:#cd0000">&#39;MoMA Paintings, and Their Preferred Ratios&#39;</span>)
 </code></pre></div><p><p style="text-align:center;">
     <img src="fitted_ratios.png" alt="fitted_ratios.png"  />
 </p>
@@ -190,13 +188,28 @@ moma %&gt;%
 
     
         
-            <a href="/posts">posts</a>
+            <a href="/about">who is rich?</a>
         
     
     
         
             &#183; 
-            <a href="/about">who is rich?</a>
+            <a href="/posts">posts</a>
+        
+            &#183; 
+            <a href="/mailto:rich@posertinlab.com">email</a>
+        
+            &#183; 
+            <a href="https://twitter.com/posertinlab">twitter</a>
+        
+            &#183; 
+            <a href="https://github.com/plethorachutney">github</a>
+        
+            &#183; 
+            <a href="https://orcid.org/0000-0001-9010-2104">orcid</a>
+        
+            &#183; 
+            <a href="https://keybase.io/plethorachutney">keybase</a>
         
     
     

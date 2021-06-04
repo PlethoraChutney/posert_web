@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+
+<meta name="description" content="rich posert&#39;s personal site.">
+<title>
+    Data Vis - Final - rich posert - grad
+</title>
+
+
+<link rel="shortcut icon" href="/posert.ico">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.min.c5514d3530979d291f3497facc20da1cec870028dbc2a3630b64bab8721bbe49.css" integrity="sha256-xVFNNTCXnSkfNJf6zCDaHOyHACjbwqNjC2S6uHIbvkk=" crossorigin="anonymous" media="screen">
+
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic">
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Data Vis - Final"/>
+<meta name="twitter:description" content="Project Concept&nbsp;¶ For this project, I&rsquo;d like to analyze my location data. In the course of tracking us 24/7 to sell us ads based on places we just were, Google keeps high-resolution information about our location on their servers. You can request a download of this (and tons of other data) using Google Takeout. I think taking a look at what data Google has (more specifically, what data Google publicly admits it has) and putting this together in a format that the general public might consume, perhaps browsing through twitter, could get people to think a bit more deeply about how surveilled we are."/>
+
+<meta property="og:title" content="Data Vis - Final" />
+<meta property="og:description" content="Project Concept&nbsp;¶ For this project, I&rsquo;d like to analyze my location data. In the course of tracking us 24/7 to sell us ads based on places we just were, Google keeps high-resolution information about our location on their servers. You can request a download of this (and tons of other data) using Google Takeout. I think taking a look at what data Google has (more specifically, what data Google publicly admits it has) and putting this together in a format that the general public might consume, perhaps browsing through twitter, could get people to think a bit more deeply about how surveilled we are." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/posts/2021-06-03-data-vis-final/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-06-03T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2021-06-03T00:00:00&#43;00:00" /><meta property="og:site_name" content="rich posert - grad" />
+
+
+
+    
+
+    
+    
+    
+    <title>
+        
+        Data Vis - Final
+        
+    </title>
+</head>
+
+<body>
+    
+    
+    <header class="wrap flex-container">
+        <h1>Data Vis - Final</h1>
+    </header>
+    
+    <main class="wrap">
+        
+<div class="flex-container">
+    <aside role="complementary">
+        Thu Jun 03, 2021 &#183; 2321 words
+        <div class="tag-container">
+            
+            
+            <span class="tag">
+                <a href="/tags/classwork/">
+                    classwork
+                </a>
+            </span>
+            
+            
+        </div>
+    </aside>
+    <hr />
+    <article role="article">
+        
+<h1 id="project-concept" class="anchor-link"><a href="#project-concept">Project Concept<span class="pilcrow">&nbsp;¶</span></a></h1>
+<p>For this project, I&rsquo;d like to analyze my location data. In the course of tracking
+us 24/7 to sell us ads based on places we just were, Google keeps high-resolution
+information about our location on their servers. You can request a download of this
+(and <em>tons</em> of other data) using <a href="https://takeout.google.com">Google Takeout</a>. I
+think taking a look at what data Google has (more specifically, what data Google
+<em>publicly admits</em> it has) and putting this together in a format that the general
+public might consume, perhaps browsing through twitter, could get people to think
+a bit more deeply about how surveilled we are. I am not necessarily advocating for
+a change in behavior &mdash; clearly I value my privacy less than some. But it&rsquo;s good
+to make informed decisions, whatever that decision might be!</p>
+
+<h1 id="data-processing-and-tidying" class="anchor-link"><a href="#data-processing-and-tidying">Data processing and tidying<span class="pilcrow">&nbsp;¶</span></a></h1>
+<p>I downloaded my location data and unzipped it, yielding an almost 1 GB JSON document.
+Quite large for plain text! Let&rsquo;s load it and see what&rsquo;s in there.</p>
+<p>This takes&hellip;quite some time. When loaded into R&rsquo;s memory, it&rsquo;s 2.9 GB.</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">library(tidyverse)
+library(ggplot2)
+library(jsonlite)
+
+location_json <span style="color:#39c">&lt;-</span> fromJSON(<span style="color:#cd0000">&#39;./Takeout/Location History/Location History.json&#39;</span>)
+</code></pre></div><div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#39c">&gt;</span> glimpse(location_json)
+List of <span style="color:#cd00cd">1</span>
+ <span style="color:#39c">$</span> locations<span style="color:#39c">:</span><span style="color:#cd0000">&#39;data.frame&#39;</span><span style="color:#39c">:</span>	<span style="color:#cd00cd">1983695</span> obs. of  <span style="color:#cd00cd">14</span> variables<span style="color:#39c">:</span>
+  ..<span style="color:#39c">$</span> timestampMs     <span style="color:#39c">:</span> chr [1<span style="color:#39c">:</span><span style="color:#cd00cd">1983695</span>] <span style="color:#cd0000">&#34;1301961469499&#34;</span> <span style="color:#cd0000">&#34;1301963940890&#34;</span> <span style="color:#cd0000">&#34;1301964189152&#34;</span> <span style="color:#cd0000">&#34;1301964191127&#34;</span> <span style="color:#cdcd00">...</span>
+  ..<span style="color:#39c">$</span> latitudeE7      <span style="color:#39c">:</span> int [1<span style="color:#39c">:</span><span style="color:#cd00cd">1983695</span>] <span style="color:#cd00cd">336192880</span> <span style="color:#cd00cd">336192880</span> <span style="color:#cd00cd">336503700</span> <span style="color:#cd00cd">336193410</span> <span style="color:#cd00cd">336192890</span> <span style="color:#cd00cd">336519440</span> <span style="color:#cd00cd">336519440</span> <span style="color:#cd00cd">336192890</span> <span style="color:#cd00cd">336195780</span> <span style="color:#cd00cd">336519440</span> <span style="color:#cdcd00">...</span>
+  ..<span style="color:#39c">$</span> longitudeE7     <span style="color:#39c">:</span> int [1<span style="color:#39c">:</span><span style="color:#cd00cd">1983695</span>] <span style="color:#cd00cd">-1178402620</span> <span style="color:#cd00cd">-1178402620</span> <span style="color:#cd00cd">-1178256820</span> <span style="color:#cd00cd">-1178401480</span> <span style="color:#cd00cd">-1178402600</span> <span style="color:#cd00cd">-1179043110</span> <span style="color:#cd00cd">-1179043110</span> <span style="color:#cd00cd">-1178402600</span> <span style="color:#cd00cd">-1178398950</span> <span style="color:#cd00cd">-1179043110</span> <span style="color:#cdcd00">...</span>
+  ..<span style="color:#39c">$</span> accuracy        <span style="color:#39c">:</span> int [1<span style="color:#39c">:</span><span style="color:#cd00cd">1983695</span>] <span style="color:#cd00cd">25</span> <span style="color:#cd00cd">25</span> <span style="color:#cd00cd">995</span> <span style="color:#cd00cd">49</span> <span style="color:#cd00cd">49</span> <span style="color:#cd00cd">1867</span> <span style="color:#cd00cd">1867</span> <span style="color:#cd00cd">49</span> <span style="color:#cd00cd">49</span> <span style="color:#cd00cd">1867</span> <span style="color:#cdcd00">...</span>
+  ..<span style="color:#39c">$</span> source          <span style="color:#39c">:</span> chr [1<span style="color:#39c">:</span><span style="color:#cd00cd">1983695</span>] <span style="color:#cd0000">&#34;network&#34;</span> <span style="color:#cd0000">&#34;network&#34;</span> <span style="color:#cd0000">&#34;cell&#34;</span> <span style="color:#cd0000">&#34;wifi&#34;</span> <span style="color:#cdcd00">...</span>
+  ..<span style="color:#39c">$</span> activity        <span style="color:#39c">:</span>List of <span style="color:#cd00cd">1983695</span>
+  .. ..<span style="color:#39c">$</span> <span style="color:#39c">:</span> <span style="color:#cdcd00">NULL</span>
+  .. ..<span style="color:#39c">$</span> <span style="color:#39c">:</span> <span style="color:#cdcd00">NULL</span>
+  .. .. [list output truncated]
+  ..<span style="color:#39c">$</span> deviceTag       <span style="color:#39c">:</span> int [1<span style="color:#39c">:</span><span style="color:#cd00cd">1983695</span>] <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">...</span>
+  ..<span style="color:#39c">$</span> platform        <span style="color:#39c">:</span> chr [1<span style="color:#39c">:</span><span style="color:#cd00cd">1983695</span>] <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">...</span>
+  ..<span style="color:#39c">$</span> platformType    <span style="color:#39c">:</span> chr [1<span style="color:#39c">:</span><span style="color:#cd00cd">1983695</span>] <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">...</span>
+  ..<span style="color:#39c">$</span> locationMetadata<span style="color:#39c">:</span>List of <span style="color:#cd00cd">1983695</span>
+  .. ..<span style="color:#39c">$</span> <span style="color:#39c">:</span> <span style="color:#cdcd00">NULL</span>
+  .. ..<span style="color:#39c">$</span> <span style="color:#39c">:</span> <span style="color:#cdcd00">NULL</span>
+  .. .. [list output truncated]
+  ..<span style="color:#39c">$</span> altitude        <span style="color:#39c">:</span> int [1<span style="color:#39c">:</span><span style="color:#cd00cd">1983695</span>] <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">...</span>
+  ..<span style="color:#39c">$</span> verticalAccuracy<span style="color:#39c">:</span> int [1<span style="color:#39c">:</span><span style="color:#cd00cd">1983695</span>] <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">...</span>
+  ..<span style="color:#39c">$</span> velocity        <span style="color:#39c">:</span> int [1<span style="color:#39c">:</span><span style="color:#cd00cd">1983695</span>] <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">...</span>
+  ..<span style="color:#39c">$</span> heading         <span style="color:#39c">:</span> int [1<span style="color:#39c">:</span><span style="color:#cd00cd">1983695</span>] <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">NA</span> <span style="color:#cdcd00">...</span>
+</code></pre></div><p>OK, so it looks like there is really a single table in this JSON document called
+<code>locations</code>. It contains:</p>
+<ul>
+<li>a timestamp in Unix time</li>
+<li>latitude</li>
+<li>longitude</li>
+<li>accuracy (in meters? feet? arbitrary accuracy units?)</li>
+<li>the source of this location datum</li>
+<li>an array called &ldquo;activity&rdquo;</li>
+<li>device tag</li>
+<li>platform</li>
+<li>platform type</li>
+<li>an array called &ldquo;locationMetadata&rdquo;</li>
+<li>altitude</li>
+<li>vertical accuracy</li>
+<li>velocity</li>
+<li>heading</li>
+</ul>
+<p>Unfortunately (or perhaps fortunately, if you care about your privacy),
+everything but timestamp, lat, long, and accuracy appear to be entirely
+NA or NULL.</p>
+<p>Let&rsquo;s check if any of this data is not NULL</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#39c">&gt;</span> activity_tibble <span style="color:#39c">&lt;-</span> tibble(location <span style="color:#39c">=</span> location_json<span style="color:#39c">$</span>locations<span style="color:#39c">$</span>activity) <span style="color:#39c">%&gt;%</span>
+    unnest(location) <span style="color:#39c">%&gt;%</span>
+    unnest(activity)
+<span style="color:#39c">&gt;</span> activity_tibble
+<span style="color:#000080"># A tibble: 2,944,923 x 3</span>
+   timestampMs   type  confidence
+   <span style="color:#39c">&lt;</span>chr<span style="color:#39c">&gt;</span>         <span style="color:#39c">&lt;</span>chr<span style="color:#39c">&gt;</span>      <span style="color:#39c">&lt;</span>int<span style="color:#39c">&gt;</span>
+ <span style="color:#cd00cd">1</span> <span style="color:#cd00cd">1348124094363</span> STILL        <span style="color:#cd00cd">100</span>
+ <span style="color:#cd00cd">2</span> <span style="color:#cd00cd">1348124189449</span> STILL        <span style="color:#cd00cd">100</span>
+ <span style="color:#cd00cd">3</span> <span style="color:#cd00cd">1348124248936</span> STILL        <span style="color:#cd00cd">100</span>
+ <span style="color:#cd00cd">4</span> <span style="color:#cd00cd">1348124429120</span> STILL        <span style="color:#cd00cd">100</span>
+ <span style="color:#cd00cd">5</span> <span style="color:#cd00cd">1348124609637</span> STILL        <span style="color:#cd00cd">100</span>
+ <span style="color:#cd00cd">6</span> <span style="color:#cd00cd">1348124789818</span> STILL        <span style="color:#cd00cd">100</span>
+ <span style="color:#cd00cd">7</span> <span style="color:#cd00cd">1348125211008</span> STILL        <span style="color:#cd00cd">100</span>
+ <span style="color:#cd00cd">8</span> <span style="color:#cd00cd">1348125391200</span> STILL        <span style="color:#cd00cd">100</span>
+ <span style="color:#cd00cd">9</span> <span style="color:#cd00cd">1348125571406</span> STILL        <span style="color:#cd00cd">100</span>
+<span style="color:#cd00cd">10</span> <span style="color:#cd00cd">1348125787167</span> STILL        <span style="color:#cd00cd">100</span>
+<span style="color:#000080"># ... with 2,944,913 more rows</span>
+</code></pre></div><p>Interesting! So there was valuable data in there, just not displayed in the JSON
+format. It seems to be twice as long as the main location data&hellip;</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#39c">&gt;</span> tail(activity_tibble)
+<span style="color:#000080"># A tibble: 6 x 3</span>
+  timestampMs   type            confidence
+  <span style="color:#39c">&lt;</span>chr<span style="color:#39c">&gt;</span>         <span style="color:#39c">&lt;</span>chr<span style="color:#39c">&gt;</span>                <span style="color:#39c">&lt;</span>int<span style="color:#39c">&gt;</span>
+<span style="color:#cd00cd">1</span> <span style="color:#cd00cd">1622742065379</span> ON_FOOT                 <span style="color:#cd00cd">10</span>
+<span style="color:#cd00cd">2</span> <span style="color:#cd00cd">1622742065379</span> STILL                   <span style="color:#cd00cd">10</span>
+<span style="color:#cd00cd">3</span> <span style="color:#cd00cd">1622742065379</span> WALKING                 <span style="color:#cd00cd">10</span>
+<span style="color:#cd00cd">4</span> <span style="color:#cd00cd">1622742065379</span> RUNNING                 <span style="color:#cd00cd">10</span>
+<span style="color:#cd00cd">5</span> <span style="color:#cd00cd">1622742065379</span> IN_ROAD_VEHICLE         <span style="color:#cd00cd">10</span>
+<span style="color:#cd00cd">6</span> <span style="color:#cd00cd">1622742065379</span> IN_RAIL_VEHICLE         <span style="color:#cd00cd">10</span>
+</code></pre></div><p>Ah, so I would guess that when Google doesn&rsquo;t know exactly what I&rsquo;m doing it gives
+a row to each guess for which it has some confidence.</p>
+<p>I wondered if processing other <code>NA</code> or <code>NULL</code> columns would give similar results. To
+skip ahead, I found that the <code>NA</code>s truly are no data, whereas the <code>NULL</code>s are
+just not representable by jsonlite. So I processed the remaning array of <code>NULL</code>s.</p>
+<p>The <code>locationMetadata</code> array gave information about the WiFi access points that were used to determine WiFi
+location. Interesting but not really something I can plot. So we can leave that
+alone.</p>
+<p>I think the mode information might be fun, let&rsquo;s filter that to rows for which Google
+is C+ confident that it knows what I&rsquo;m doing. Then we can join it into the
+main location table. I&rsquo;ll save that combined table into a csv for faster loading
+in the dreaded event I should crash.</p>
+<p>Again.</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">loc_df <span style="color:#39c">&lt;-</span> tibble(
+  <span style="color:#cd0000">&#39;timestamp&#39;</span> <span style="color:#39c">=</span> location_json<span style="color:#39c">$</span>locations<span style="color:#39c">$</span>timestampMs,
+  <span style="color:#cd0000">&#39;lat&#39;</span> <span style="color:#39c">=</span> location_json<span style="color:#39c">$</span>locations<span style="color:#39c">$</span>latitudeE7,
+  <span style="color:#cd0000">&#39;lon&#39;</span> <span style="color:#39c">=</span> location_json<span style="color:#39c">$</span>locations<span style="color:#39c">$</span>longitudeE7,
+  <span style="color:#cd0000">&#39;source&#39;</span> <span style="color:#39c">=</span> location_json<span style="color:#39c">$</span>locations<span style="color:#39c">$</span>source
+)
+
+loc_df <span style="color:#39c">&lt;-</span> activity_tibble <span style="color:#39c">%&gt;%</span> 
+  filter(confidence <span style="color:#39c">&gt;</span> <span style="color:#cd00cd">75</span>) <span style="color:#39c">%&gt;%</span> 
+  rename (<span style="color:#cd0000">&#39;timestamp&#39;</span> <span style="color:#39c">=</span> timestampMs) <span style="color:#39c">%&gt;%</span> 
+  right_join(loc_df)
+  
+loc_df <span style="color:#39c">%&gt;%</span> 
+  write_csv(<span style="color:#cd0000">&#39;loc_df.csv&#39;</span>)
+</code></pre></div>
+<h1 id="exploratory-plots" class="anchor-link"><a href="#exploratory-plots">Exploratory plots<span class="pilcrow">&nbsp;¶</span></a></h1>
+
+<h2 id="mode-share" class="anchor-link"><a href="#mode-share">Mode share<span class="pilcrow">&nbsp;¶</span></a></h2>
+<p>Okay, let&rsquo;s see what&rsquo;s in here. First, what modes does Google most often think
+I travel by?</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">loc_df <span style="color:#39c">%&gt;%</span> 
+  filter(<span style="color:#39c">!</span>is.na(type)) <span style="color:#39c">%&gt;%</span> 
+  ggplot(aes(x <span style="color:#39c">=</span> type)) <span style="color:#39c">+</span>
+  theme_minimal() <span style="color:#39c">+</span>
+  geom_bar(color <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;black&#39;</span>, fill <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;white&#39;</span>, size <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>)
+</code></pre></div><p><p style="text-align:center;">
+    <img src="all_type.png" alt="Initial Mode Plot"  />
+</p>
+</p>
+<p>I&rsquo;m mostly being still, which makes sense. I spend most of my life asleep or in lab.</p>
+<p>Let&rsquo;s filter that out&hellip;and also&hellip;&lsquo;tilting&rsquo;&hellip;</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">loc_df <span style="color:#39c">%&gt;%</span> 
+  filter(<span style="color:#39c">!</span>is.na(type) <span style="color:#39c">&amp;</span> <span style="color:#39c">!</span>(type <span style="color:#39c">%in%</span> c(<span style="color:#cd0000">&#39;STILL&#39;</span>, <span style="color:#cd0000">&#39;TILTING&#39;</span>))) <span style="color:#39c">%&gt;%</span> 
+  ggplot(aes(x <span style="color:#39c">=</span> type)) <span style="color:#39c">+</span>
+  theme_minimal() <span style="color:#39c">+</span>
+  geom_bar(color <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;black&#39;</span>, fill <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;white&#39;</span>, size <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>)
+</code></pre></div><p><p style="text-align:center;">
+    <img src="filtered_modeshare.png" alt="Filtered mode share"  />
+</p>
+</p>
+<p>I am not sure what the difference between ON_FOOT and WALKING is, but this
+seems believable to me, since I don&rsquo;t own a car. This would include data from
+back when I owned a car, too. To be able to look at just more recent stuff,
+let&rsquo;s deal with those timestamps.</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">library(lubridate)
+
+loc_df <span style="color:#39c">&lt;-</span> loc_df <span style="color:#39c">%&gt;%</span> 
+  mutate(timestamp <span style="color:#39c">=</span> as_datetime(timestamp<span style="color:#39c">/</span><span style="color:#cd00cd">1000</span>)) <span style="color:#39c">%&gt;%</span> 
+  mutate(timestamp <span style="color:#39c">=</span> with_tz(timestamp, tzone <span style="color:#39c">=</span> <span style="color:#cd0000">&#34;America/Los_Angeles&#34;</span>))
+
+loc_df <span style="color:#39c">%&gt;%</span> 
+  filter(timestamp <span style="color:#39c">&gt;</span> ymd(<span style="color:#cd0000">&#39;2018-01-01&#39;</span>)) <span style="color:#39c">%&gt;%</span> 
+  filter(<span style="color:#39c">!</span>is.na(type) <span style="color:#39c">&amp;</span> <span style="color:#39c">!</span>(type <span style="color:#39c">%in%</span> c(<span style="color:#cd0000">&#39;STILL&#39;</span>, <span style="color:#cd0000">&#39;TILTING&#39;</span>))) <span style="color:#39c">%&gt;%</span> 
+  ggplot(aes(x <span style="color:#39c">=</span> type)) <span style="color:#39c">+</span>
+  theme_minimal() <span style="color:#39c">+</span>
+  geom_bar(color <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;black&#39;</span>, fill <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;white&#39;</span>, size <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>) <span style="color:#39c">+</span>
+  ggtitle(<span style="color:#cd0000">&#39;Mode share since 2018&#39;</span>)
+</code></pre></div><p><p style="text-align:center;">
+    <img src="mode_share_2018.png" alt="Mode share since 2018"  />
+</p>
+</p>
+<p>As expected, the share of time spent in motor vehicles goes down.</p>
+
+<h2 id="sampling-rate" class="anchor-link"><a href="#sampling-rate">Sampling rate<span class="pilcrow">&nbsp;¶</span></a></h2>
+<p>It would be nice to be able to think about durations in addition to just samples.
+The above mode share plots are what I am doing at each <em>sample</em>, which does not
+necessarily reflect the amount of <em>time</em> that I spend doing those things. If for some
+reason my phone samples less frequently when, for instance, I&rsquo;m tracking a bike
+ride in Strava, that mode will appear to be used less.</p>
+<p>Let&rsquo;s check how many samples there are for any given week. We&rsquo;d hope this would be
+a relatively flat line:</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">loc_df <span style="color:#39c">%&gt;%</span> 
+  ggplot(aes(x <span style="color:#39c">=</span> timestamp)) <span style="color:#39c">+</span>
+  theme_minimal() <span style="color:#39c">+</span>
+  geom_histogram(bins <span style="color:#39c">=</span> <span style="color:#cd00cd">200</span>)
+</code></pre></div><p><p style="text-align:center;">
+    <img src="overall_sampling_rate.png" alt="All location samples"  />
+</p>
+</p>
+<p>Not at all steady, but it does give you a sense of just how much data Google has!
+This makes future analyses much more difficult, but I have an
+idea. If we start considering data from when I graduated college, we&rsquo;ll miss that
+huge gap during 2013 (I think I had a very broken phone back then).</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">loc_df <span style="color:#39c">%&gt;%</span> 
+  filter(timestamp <span style="color:#39c">&gt;</span> ymd(<span style="color:#cd0000">&#39;2015-06-01&#39;</span>)) <span style="color:#39c">%&gt;%</span> 
+  ggplot(aes(x <span style="color:#39c">=</span> timestamp)) <span style="color:#39c">+</span>
+  theme_minimal() <span style="color:#39c">+</span>
+  geom_histogram(bins <span style="color:#39c">=</span> <span style="color:#cd00cd">250</span>)
+</code></pre></div><p><p style="text-align:center;">
+    <img src="sampling_since_college.png" alt="Samples since I graduated college"  />
+</p>
+</p>
+<p>I have picked 250 bins, which is approximately one bin per week. Here we can see
+that there is a slight cyclic nature to the sampling rate, and that for whatever
+reason 2016 had a much higher rate. In any case, I wonder what is the <em>longest</em>
+and <em>shortest</em> duration between samples. If this is acceptably low, we can attach
+a <em>duration</em> to each sample, over which we could assume I&rsquo;m doing whatever activity.</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">loc_df <span style="color:#39c">&lt;-</span> loc_df <span style="color:#39c">%&gt;%</span> 
+  filter(timestamp <span style="color:#39c">&gt;</span> ymd(<span style="color:#cd0000">&#39;2015-06-01&#39;</span>)) <span style="color:#39c">%&gt;%</span> 
+  arrange(timestamp) <span style="color:#39c">%&gt;%</span> 
+  mutate(next_sample <span style="color:#39c">=</span> lead(timestamp)) <span style="color:#39c">%&gt;%</span> 
+  mutate(duration <span style="color:#39c">=</span> interval(timestamp, next_sample)<span style="color:#39c">/</span>seconds(<span style="color:#cd00cd">1</span>)) <span style="color:#39c">%&gt;%</span> 
+  filter(<span style="color:#39c">!</span>is.na(duration))
+
+loc_df <span style="color:#39c">%&gt;%</span> 
+  ggplot(aes(x <span style="color:#39c">=</span> duration)) <span style="color:#39c">+</span>
+  geom_histogram()
+</code></pre></div><p><p style="text-align:center;">
+    <img src="all_durations.png" alt="All sampling durations"  />
+</p>
+</p>
+<p>Seems we&rsquo;ve got a few outliers. Let&rsquo;s filter everything below 5000 seconds, which is
+about an hour and twenty minutes.</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">loc_df <span style="color:#39c">%&gt;%</span> 
+  filter(duration <span style="color:#39c">&lt;</span> <span style="color:#cd00cd">2000</span> <span style="color:#39c">&amp;</span> duration <span style="color:#39c">&gt;</span> <span style="color:#cd00cd">0</span>) <span style="color:#39c">%&gt;%</span> 
+  ggplot(aes(x <span style="color:#39c">=</span> duration)) <span style="color:#39c">+</span>
+  theme_minimal() <span style="color:#39c">+</span>
+  geom_density(fill <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;#b22222&#39;</span>, size <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>)
+</code></pre></div><p><p style="text-align:center;">
+    <img src="filtered_durations.png" alt="Filtered durations"  />
+</p>
+</p>
+<p>Looks like the vast majority of samples last less than 10 minutes.
+What would be an ideal sampling rate for this type of analysis, every other minute?
+Let&rsquo;s take a look at how many samples last longer than that:</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">loc_df <span style="color:#39c">%&gt;%</span> 
+  mutate(two_minutes <span style="color:#39c">=</span> duration <span style="color:#39c">&lt;=</span> <span style="color:#cd00cd">120</span>) <span style="color:#39c">%&gt;%</span> 
+  count(two_minutes) <span style="color:#39c">%&gt;%</span> 
+  mutate(percent <span style="color:#39c">=</span> n<span style="color:#39c">/</span>sum(n) <span style="color:#39c">*</span> <span style="color:#cd00cd">100</span>) <span style="color:#39c">%&gt;%</span> 
+  ggplot(aes(x <span style="color:#39c">=</span> two_minutes, y <span style="color:#39c">=</span> percent)) <span style="color:#39c">+</span>
+  theme_minimal() <span style="color:#39c">+</span>
+  geom_hline(yintercept <span style="color:#39c">=</span> <span style="color:#cd00cd">50</span>) <span style="color:#39c">+</span>
+  geom_col(fill <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;white&#39;</span>, color <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;black&#39;</span>, size <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>) <span style="color:#39c">+</span>
+  expand_limits(y <span style="color:#39c">=</span> <span style="color:#cd00cd">100</span>)
+</code></pre></div><p><p style="text-align:center;">
+    <img src="every_other_minute.png" alt="How many samples are only two minutes before the next?"  />
+</p>
+</p>
+<p>About 55%! So we know that over half of our samples last less than two minutes,
+and that the vast majority of them last less than ten minutes. These samples
+span the course of six years, so I&rsquo;m comfortable using those durations to calculate things.</p>
+
+<h2 id="travel-modes-revisited" class="anchor-link"><a href="#travel-modes-revisited">Travel Modes Revisited<span class="pilcrow">&nbsp;¶</span></a></h2>
+<p>Let&rsquo;s revisit travel modes, now that we know about durations. I expect things will
+look more or less similar, since durations seem to clump together around the two
+minute mark.</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">loc_df <span style="color:#39c">%&gt;%</span> 
+  filter(timestamp <span style="color:#39c">&gt;</span> ymd(<span style="color:#cd0000">&#39;2018-01-01&#39;</span>) <span style="color:#39c">&amp;</span> duration <span style="color:#39c">&gt;</span> <span style="color:#cd00cd">0</span>) <span style="color:#39c">%&gt;%</span> 
+  filter(<span style="color:#39c">!</span>is.na(type) <span style="color:#39c">&amp;</span> <span style="color:#39c">!</span>(type <span style="color:#39c">%in%</span> c(<span style="color:#cd0000">&#39;STILL&#39;</span>, <span style="color:#cd0000">&#39;TILTING&#39;</span>))) <span style="color:#39c">%&gt;%</span> 
+  group_by(type) <span style="color:#39c">%&gt;%</span> 
+  summarize(Time <span style="color:#39c">=</span> sum(duration)) <span style="color:#39c">%&gt;%</span> 
+  ggplot(aes(x <span style="color:#39c">=</span> type, y <span style="color:#39c">=</span> Time)) <span style="color:#39c">+</span>
+  theme_minimal() <span style="color:#39c">+</span>
+  geom_col(color <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;black&#39;</span>, fill <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;white&#39;</span>, size <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>) <span style="color:#39c">+</span>
+  ylab(<span style="color:#cd0000">&#39;Time (seconds)&#39;</span>) <span style="color:#39c">+</span>
+  xlab(<span style="color:#cd0000">&#39;Mode&#39;</span>) <span style="color:#39c">+</span>
+  ggtitle(<span style="color:#cd0000">&#39;Mode share since 2018&#39;</span>)
+</code></pre></div><p><p style="text-align:center;">
+    <img src="mode_duration.png" alt="Travel mode durations"  />
+</p>
+</p>
+<p>The total time covered by these samples is only about an hour! Clearly, Google
+mostly does not know what type of transportation I&rsquo;m using, even accounting
+for the fact that most of the samples are &ldquo;STILL&rdquo;, which is filtered here.</p>
+
+<h1 id="final-plot" class="anchor-link"><a href="#final-plot">Final Plot<span class="pilcrow">&nbsp;¶</span></a></h1>
+<p>I think for my final final plot, I&rsquo;d like to make a choropleth map of what
+neighborhoods I spend the most time in. For this, we&rsquo;ll need shape files for
+Portland&rsquo;s neighborhoods. I&rsquo;ll just use the data
+since I graduated college, both because that would vastly skew the data to Reed,
+and also because the sampling rate stabilizes quite a bit after 2015.</p>
+
+<h2 id="geography" class="anchor-link"><a href="#geography">Geography<span class="pilcrow">&nbsp;¶</span></a></h2>
+<p>I&rsquo;ve downloaded data from <a href="https://gis-pdx.opendata.arcgis.com/">Portland&rsquo;s GIS team</a>,
+and now I should be able to load it all up to get a map of the neighborhoods.</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">library(sf)
+library(sp)
+library(ggmap)
+library(maps)
+library(ggspatial)
+
+nhoods <span style="color:#39c">&lt;-</span> st_read(<span style="color:#cd0000">&#39;./Neighborhoods_(Regions)&#39;</span>)
+river <span style="color:#39c">&lt;-</span> st_read(<span style="color:#cd0000">&#39;./Willamette_Columbia_River_Ordinary_High_Water&#39;</span>)
+
+nhoods <span style="color:#39c">%&gt;%</span> 
+  ggplot() <span style="color:#39c">+</span> 
+  geom_sf(fill <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;#F7F6C5&#39;</span>) <span style="color:#39c">+</span>
+  geom_sf(data<span style="color:#39c">=</span>river, fill<span style="color:#39c">=</span><span style="color:#cd0000">&#34;#3f90df&#34;</span>, size<span style="color:#39c">=</span><span style="color:#cd00cd">0.0</span>) <span style="color:#39c">+</span>
+  theme_minimal()
+</code></pre></div><p><p style="text-align:center;">
+    <img src="river-nhood.png" alt="Neighborhood and river map"  />
+</p>
+</p>
+<p>Wonderful, so I&rsquo;ve got that working. Next, the Google lat/long data actually
+had the titles &ldquo;LatitudeE7&rdquo; and &ldquo;LongitudeE7&rdquo;, which explains why they&rsquo;re such
+huge numbers.</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">loc_df <span style="color:#39c">&lt;-</span> loc_df <span style="color:#39c">%&gt;%</span> 
+  mutate(lat <span style="color:#39c">=</span> lat<span style="color:#39c">/</span><span style="color:#cd00cd">1e7</span>, lon <span style="color:#39c">=</span> lon<span style="color:#39c">/</span><span style="color:#cd00cd">1e7</span>)
+
+sample_matrix <span style="color:#39c">&lt;-</span> matrix(data <span style="color:#39c">=</span> c(loc_df<span style="color:#39c">$</span>lat, loc_df<span style="color:#39c">$</span>lon), ncol <span style="color:#39c">=</span> <span style="color:#cd00cd">2</span>)
+
+sample_shape <span style="color:#39c">&lt;-</span> st_multipoint(x <span style="color:#39c">=</span> sample_matrix)
+</code></pre></div><p>I recognize the approximate lat/lon as being around Portland, so that&rsquo;s a good
+sign. To take out any errors or vacations, I&rsquo;ll filter all the data to be
+approximately in Portland.</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">portland_df <span style="color:#39c">&lt;-</span> loc_df <span style="color:#39c">%&gt;%</span> 
+  filter(lat <span style="color:#39c">&gt;</span> <span style="color:#cd00cd">45.47</span> <span style="color:#39c">&amp;</span> lat <span style="color:#39c">&lt;</span> <span style="color:#cd00cd">45.61</span> <span style="color:#39c">&amp;</span> lon <span style="color:#39c">&gt;</span> <span style="color:#cd00cd">-122.8</span> <span style="color:#39c">&amp;</span> lon <span style="color:#39c">&lt;</span> <span style="color:#cd00cd">-122.5</span>)
+
+portland_latlon <span style="color:#39c">&lt;-</span> portland_df<span style="color:#39c">%&gt;%</span> 
+  select(lon, lat)
+
+
+ploc_project <span style="color:#39c">&lt;-</span> sf_project(st_crs(<span style="color:#cd00cd">4326</span>), st_crs(<span style="color:#cd00cd">3857</span>), portland_latlon)
+
+portland_df<span style="color:#39c">$</span>lon <span style="color:#39c">=</span> ploc_project[,<span style="color:#cd00cd">1</span>]
+portland_df<span style="color:#39c">$</span>lat <span style="color:#39c">=</span> ploc_project[,<span style="color:#cd00cd">2</span>]
+
+nhoods <span style="color:#39c">%&gt;%</span> 
+  ggplot() <span style="color:#39c">+</span>
+  geom_sf(fill <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;#F7F6C5&#39;</span>) <span style="color:#39c">+</span>
+  geom_sf(data<span style="color:#39c">=</span>river, fill<span style="color:#39c">=</span><span style="color:#cd0000">&#34;#3f90df&#34;</span>, size<span style="color:#39c">=</span><span style="color:#cd00cd">0.0</span>) <span style="color:#39c">+</span>
+  geom_point(data <span style="color:#39c">=</span> head(portland_df, n <span style="color:#39c">=</span> <span style="color:#cd00cd">100000</span>), aes(x <span style="color:#39c">=</span> lon, y <span style="color:#39c">=</span> lat))
+</code></pre></div><p><p style="text-align:center;">
+    <img src="initial_geo.png" alt="Points for samples"  />
+</p>
+</p>
+<p>OK! Now we&rsquo;re getting somewhere. I still want to make the choropleth, but something
+I like about this representation is that you can see bike routes I prefer, where
+freeways are, etc. Anyway, now I need to find which points are inside
+which polygons.</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">pnts <span style="color:#39c">&lt;-</span> select(portland_df, lat, lon)
+
+pnts_sf <span style="color:#39c">&lt;-</span> st_as_sf(pnts, coords <span style="color:#39c">=</span> c(<span style="color:#cd0000">&#39;lon&#39;</span>, <span style="color:#cd0000">&#39;lat&#39;</span>), crs <span style="color:#39c">=</span> st_crs(nhoods))
+
+pnts <span style="color:#39c">&lt;-</span> pnts_sf <span style="color:#39c">%&gt;%</span> mutate(intersection <span style="color:#39c">=</span> st_intersects(geometry, nhoods)) <span style="color:#39c">%&gt;%</span> 
+  unnest(intersection) <span style="color:#39c">%&gt;%</span> 
+  mutate(NAME <span style="color:#39c">=</span> nhoods<span style="color:#39c">$</span>NAME[intersection])
+</code></pre></div><p>Now that we know which points belong in which polygons, it&rsquo;s a simple matter to
+get the counts of points into the shapefile, at which point we should be able
+to fill the neighborhoods in proportion to how many samples have been there.
+Ideally we&rsquo;d do it by duration, but I am not sure that&rsquo;s all that much more accurate
+than assuming that the duration of points are equally and randomly distributred.</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">counted <span style="color:#39c">&lt;-</span> pnts <span style="color:#39c">%&gt;%</span> 
+  count(NAME)
+
+counted_tibble <span style="color:#39c">&lt;-</span> tibble(NAME <span style="color:#39c">=</span> counted<span style="color:#39c">$</span>NAME, n <span style="color:#39c">=</span> counted<span style="color:#39c">$</span>n)
+
+left_join(nhoods, counted_tibble) <span style="color:#39c">%&gt;%</span> 
+  ggplot() <span style="color:#39c">+</span>
+  geom_sf(aes(fill <span style="color:#39c">=</span> n)) <span style="color:#39c">+</span>
+  geom_sf(data<span style="color:#39c">=</span>river, fill<span style="color:#39c">=</span><span style="color:#cd0000">&#34;#3f90df&#34;</span>, size<span style="color:#39c">=</span><span style="color:#cd00cd">0.0</span>)
+  
+</code></pre></div><p><p style="text-align:center;">
+    <img src="first_chloropleth.png" alt="Basic choropleth"  />
+</p>
+</p>
+<p>A few things: we need to control for the area of each neighborhood, and then figure
+out a good scale for displaying things.</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">counted_nhoods <span style="color:#39c">&lt;-</span> left_join(nhoods, counted_tibble) <span style="color:#39c">%&gt;%</span> 
+  mutate(adj_counts <span style="color:#39c">=</span> n<span style="color:#39c">/</span>Shape_Area <span style="color:#39c">*</span> <span style="color:#cd00cd">1000</span>)
+
+breaks <span style="color:#39c">=</span> c(<span style="color:#cd00cd">0</span>, <span style="color:#cd00cd">2</span>, <span style="color:#cd00cd">4</span>, <span style="color:#cd00cd">6</span>, <span style="color:#cd00cd">8</span>, <span style="color:#cd00cd">10</span>, <span style="color:#cd00cd">100</span>)
+counted_nhoods<span style="color:#39c">$</span>disc_counts <span style="color:#39c">&lt;-</span> cut(counted_nhoods<span style="color:#39c">$</span>adj_counts, breaks <span style="color:#39c">=</span> breaks, include.lowest <span style="color:#39c">=</span> <span style="color:#cdcd00">TRUE</span>)
+
+counted_nhoods <span style="color:#39c">%&gt;%</span> 
+  ggplot() <span style="color:#39c">+</span>
+  theme_void() <span style="color:#39c">+</span>
+  ggtitle(<span style="color:#cd0000">&#34;Google knows where you sleep&#34;</span>) <span style="color:#39c">+</span>
+  geom_sf(aes(fill <span style="color:#39c">=</span> disc_counts)) <span style="color:#39c">+</span>
+  geom_sf(data<span style="color:#39c">=</span>river, fill<span style="color:#39c">=</span><span style="color:#cd0000">&#34;#3f90df&#34;</span>, size<span style="color:#39c">=</span><span style="color:#cd00cd">0.0</span>) <span style="color:#39c">+</span>
+  scale_fill_manual(
+    values <span style="color:#39c">=</span> c(<span style="color:#cd0000">&#39;#ffffd4&#39;</span>,<span style="color:#cd0000">&#39;#fed98e&#39;</span>,<span style="color:#cd0000">&#39;#fe9929&#39;</span>,<span style="color:#cd0000">&#39;#d95f0e&#39;</span>,<span style="color:#cd0000">&#39;#993404&#39;</span>),
+    name <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;Area-normalized location samples&#39;</span>
+  )
+</code></pre></div><p><p style="text-align:center;">
+    <img src="final_chloropleth.png" alt="Final choropleth"  />
+</p>
+</p>
+
+<h1 id="discussion" class="anchor-link"><a href="#discussion">Discussion<span class="pilcrow">&nbsp;¶</span></a></h1>
+<p>This <strong>choropleth</strong> gives a decent sense of where I have been over the past six years
+of my life. Darker red neighborhoods represent neighborhoods I have spent more time
+in, controlling for the area of that neighborhood.
+Obviously, regions outside Portland are not captured, and we could
+investigate specific roads and more. However, a choropleth is intuitive, and I
+think it would be more striking to my intended audience that watching my dot
+travel along roads.</p>
+<p>Moreover, if you know anything about my history, this map would also tell you more
+than my physical location &mdash; people I&rsquo;ve dated, places I&rsquo;ve worked, places I&rsquo;ve
+lived. Especially if you had this map for <em>every person on earth</em>, and you
+resolved them all by time, you could do a lot of correlative inference.</p>
+<p>A newbie to this map would be drawn to the red, high-density regions: inner SE
+Portland and OHSU. They might then investigate the isolated islands in other regions
+of the map.</p>
+<p>I chose a sequential color scheme to highlight that we are comparing the same
+variable across a discrete color scheme, rather than a divergent or qualitative
+scheme. Qualitative would have been inappropriate, and divergent would perhaps
+have been more suited to investigating if there were places I went more or less
+than average. However, for this map, most of it is highlighted with few counts,
+so that would not have given much information.</p>
+
+    </article>
+</div>
+
+
+        
+<nav role="navigation" class="flex-container bottom-menu">
+    
+<hr />
+<p>
+
+
+    
+        <a href="/posts">back</a>
+        
+            &#183;
+        
+    
+
+    
+        
+            <a href="/about">who is rich?</a>
+        
+    
+    
+        
+            &#183; 
+            <a href="/posts">posts</a>
+        
+            &#183; 
+            <a href="/mailto:rich@posertinlab.com">email</a>
+        
+            &#183; 
+            <a href="https://twitter.com/posertinlab">twitter</a>
+        
+            &#183; 
+            <a href="https://github.com/plethorachutney">github</a>
+        
+            &#183; 
+            <a href="https://orcid.org/0000-0001-9010-2104">orcid</a>
+        
+            &#183; 
+            <a href="https://keybase.io/plethorachutney">keybase</a>
+        
+    
+    
+    
+        &#183; 
+        <a href="/">
+            main
+        </a>
+    
+
+</p>
+</nav>
+
+    </main>
+    
+    <footer class="flex-container footer">rich is a bad grad student.
+</footer>
+    
+    
+</body>
+
+</html>

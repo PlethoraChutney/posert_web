@@ -16,7 +16,7 @@
 </title>
 
 
-<link rel="shortcut icon" href="/sam.ico">
+<link rel="shortcut icon" href="/posert.ico">
 
 
 
@@ -39,9 +39,7 @@
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic">
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://example.com/116"/>
-
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Data Vis - Life Expectancy"/>
 <meta name="twitter:description" content="For this assignment, we were tasked with looking through the gapminder dataset, tidying it, and producing some tables and visualizations. I&rsquo;m quite happy with my process for this graph, even though it ended up a bit busy. The first step was loading up the data and taking a look.
 glimpse(gapminder) ## Rows: 1,704## Columns: 6## $ country &lt;fct&gt; Afghanistan, Afghanistan, Afghanistan, Afghanistan, Afgha...## $ continent &lt;fct&gt; Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asi."/>
@@ -50,7 +48,7 @@ glimpse(gapminder) ## Rows: 1,704## Columns: 6## $ country &lt;fct&gt; Afghani
 <meta property="og:description" content="For this assignment, we were tasked with looking through the gapminder dataset, tidying it, and producing some tables and visualizations. I&rsquo;m quite happy with my process for this graph, even though it ended up a bit busy. The first step was loading up the data and taking a look.
 glimpse(gapminder) ## Rows: 1,704## Columns: 6## $ country &lt;fct&gt; Afghanistan, Afghanistan, Afghanistan, Afghanistan, Afgha...## $ continent &lt;fct&gt; Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asi." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://example.com/posts/2021-06-02-data-vis-life-expectancy/" /><meta property="og:image" content="https://example.com/116"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://example.com/posts/2021-06-02-data-vis-life-expectancy/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-06-02T00:00:00&#43;00:00" />
 <meta property="article:modified_time" content="2021-06-02T00:00:00&#43;00:00" /><meta property="og:site_name" content="rich posert - grad" />
 
@@ -98,7 +96,7 @@ glimpse(gapminder) ## Rows: 1,704## Columns: 6## $ country &lt;fct&gt; Afghani
 dataset, tidying it, and producing some tables and visualizations. I&rsquo;m
 quite happy with my process for this graph, even though it ended up a bit
 busy. The first step was loading up the data and taking a look.</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#447fcf">glimpse</span>(gapminder)
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">glimpse(gapminder)
 </code></pre></div><pre><code>## Rows: 1,704
 ## Columns: 6
 ## $ country   &lt;fct&gt; Afghanistan, Afghanistan, Afghanistan, Afghanistan, Afgha...
@@ -116,49 +114,49 @@ to a flat line, then plot the endpoints on that projection.</p>
 continent-year median. Then I left-join that data into the main dataframe
 and use that to make a set of points, which know whether or not they &ldquo;beat&rdquo;
 the median.</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">med_le &lt;- gapminder %&gt;% 
-  <span style="color:#447fcf">group_by</span>(continent, year) %&gt;% 
-  <span style="color:#447fcf">summarize</span>(med_le = <span style="color:#447fcf">median</span>(lifeExp), .groups = <span style="color:#ed9d13">&#39;drop_last&#39;</span>)
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">med_le <span style="color:#39c">&lt;-</span> gapminder <span style="color:#39c">%&gt;%</span> 
+  group_by(continent, year) <span style="color:#39c">%&gt;%</span> 
+  summarize(med_le <span style="color:#39c">=</span> median(lifeExp), .groups <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;drop_last&#39;</span>)
 
-le_points &lt;- gapminder %&gt;% 
-  <span style="color:#447fcf">select</span>(year, continent, country, lifeExp) %&gt;% 
-  <span style="color:#447fcf">filter</span>(year == <span style="color:#447fcf">max</span>(year) | year == <span style="color:#447fcf">min</span>(year)) %&gt;% 
-  <span style="color:#447fcf">left_join</span>(med_le, by = <span style="color:#447fcf">c</span>(<span style="color:#ed9d13">&#39;continent&#39;</span>, <span style="color:#ed9d13">&#39;year&#39;</span>)) %&gt;% 
-  <span style="color:#447fcf">mutate</span>(below_med = <span style="color:#447fcf">if_else</span>(lifeExp &lt; med_le, <span style="color:#ed9d13">&#39;Below&#39;</span>, <span style="color:#ed9d13">&#39;Above&#39;</span>)) %&gt;% 
-  <span style="color:#447fcf">select</span>(-med_le) %&gt;% 
-  <span style="color:#447fcf">mutate</span>(is_max = year == <span style="color:#447fcf">max</span>(year), year = <span style="color:#447fcf">as.factor</span>(year))
+le_points <span style="color:#39c">&lt;-</span> gapminder <span style="color:#39c">%&gt;%</span> 
+  select(year, continent, country, lifeExp) <span style="color:#39c">%&gt;%</span> 
+  filter(year <span style="color:#39c">==</span> max(year) <span style="color:#39c">|</span> year <span style="color:#39c">==</span> min(year)) <span style="color:#39c">%&gt;%</span> 
+  left_join(med_le, by <span style="color:#39c">=</span> c(<span style="color:#cd0000">&#39;continent&#39;</span>, <span style="color:#cd0000">&#39;year&#39;</span>)) <span style="color:#39c">%&gt;%</span> 
+  mutate(below_med <span style="color:#39c">=</span> if_else(lifeExp <span style="color:#39c">&lt;</span> med_le, <span style="color:#cd0000">&#39;Below&#39;</span>, <span style="color:#cd0000">&#39;Above&#39;</span>)) <span style="color:#39c">%&gt;%</span> 
+  select(<span style="color:#39c">-</span>med_le) <span style="color:#39c">%&gt;%</span> 
+  mutate(is_max <span style="color:#39c">=</span> year <span style="color:#39c">==</span> max(year), year <span style="color:#39c">=</span> as.factor(year))
 </code></pre></div><p>Once that&rsquo;s done, it&rsquo;s time to do the part that actually ended up being
 the most difficult for me: coloring the country labels by their continent.
 I thought about encoding another variable here, but it&rsquo;s hard to read a word
 and think about another thing anyway, so I kept it relatively simple, and eventually
 this is a dual encoding with the line color anyway.</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">cont_colors &lt;- <span style="color:#447fcf">c</span>(<span style="color:#ed9d13">&#39;#1b9e77&#39;</span>,<span style="color:#ed9d13">&#39;#d95f02&#39;</span>,<span style="color:#ed9d13">&#39;#7570b3&#39;</span>,<span style="color:#ed9d13">&#39;#e7298a&#39;</span>,<span style="color:#ed9d13">&#39;#66a61e&#39;</span>)
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">cont_colors <span style="color:#39c">&lt;-</span> c(<span style="color:#cd0000">&#39;#1b9e77&#39;</span>,<span style="color:#cd0000">&#39;#d95f02&#39;</span>,<span style="color:#cd0000">&#39;#7570b3&#39;</span>,<span style="color:#cd0000">&#39;#e7298a&#39;</span>,<span style="color:#cd0000">&#39;#66a61e&#39;</span>)
 
-y_ax_cont_list &lt;- gapminder %&gt;% 
-  <span style="color:#447fcf">group_by</span>(country) %&gt;% 
-  <span style="color:#447fcf">filter</span>(lifeExp == <span style="color:#447fcf">max</span>(lifeExp)) %&gt;% 
-  <span style="color:#447fcf">ungroup</span>() %&gt;% 
-  <span style="color:#447fcf">arrange</span>(lifeExp) %&gt;% 
-  <span style="color:#447fcf">pull</span>(continent)
+y_ax_cont_list <span style="color:#39c">&lt;-</span> gapminder <span style="color:#39c">%&gt;%</span> 
+  group_by(country) <span style="color:#39c">%&gt;%</span> 
+  filter(lifeExp <span style="color:#39c">==</span> max(lifeExp)) <span style="color:#39c">%&gt;%</span> 
+  ungroup() <span style="color:#39c">%&gt;%</span> 
+  arrange(lifeExp) <span style="color:#39c">%&gt;%</span> 
+  pull(continent)
 
-y_ax_colors &lt;- cont_colors[y_ax_cont_list]
+y_ax_colors <span style="color:#39c">&lt;-</span> cont_colors[y_ax_cont_list]
 </code></pre></div><p>And finally, we can put it together in a single big ggplot call</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">gapminder %&gt;% 
-  <span style="color:#447fcf">group_by</span>(country) %&gt;% 
-  <span style="color:#447fcf">select</span>(year, continent, country, lifeExp) %&gt;% 
-  <span style="color:#447fcf">ggplot</span>(<span style="color:#447fcf">aes</span>(x = lifeExp, y = <span style="color:#447fcf">fct_reorder</span>(country, lifeExp, .fun = max))) +
-  <span style="color:#447fcf">theme_minimal</span>() +
-  <span style="color:#447fcf">geom_line</span>(<span style="color:#447fcf">aes</span>(color = continent), size = <span style="color:#3677a9">1</span>) +
-  <span style="color:#447fcf">geom_point</span>(data = le_points, <span style="color:#447fcf">aes</span>(shape = below_med, fill = year), size = <span style="color:#3677a9">2</span>) +
-  <span style="color:#447fcf">scale_shape_manual</span>(values = <span style="color:#447fcf">c</span>(<span style="color:#3677a9">24</span>, <span style="color:#3677a9">25</span>), name = <span style="color:#ed9d13">&#39;Continent Median&#39;</span>) +
-  <span style="color:#447fcf">scale_color_manual</span>(values = cont_colors, name = <span style="color:#ed9d13">&#39;Continent&#39;</span>) +
-  <span style="color:#447fcf">scale_fill_manual</span>(
-    values = <span style="color:#447fcf">c</span>(<span style="color:#ed9d13">&#39;#FFFFFF&#39;</span>, <span style="color:#ed9d13">&#39;#3B60E4&#39;</span>), name = <span style="color:#ed9d13">&#39;Year&#39;</span>, 
-    guide = <span style="color:#447fcf">guide_legend</span>(override.aes = <span style="color:#447fcf">list</span>(shape = <span style="color:#3677a9">21</span>, size = <span style="color:#3677a9">3</span>))
-  ) +
-  <span style="color:#447fcf">theme</span>(axis.text.y = <span style="color:#447fcf">element_text</span>(color = y_ax_colors)) +
-  <span style="color:#447fcf">ylab</span>(<span style="color:#ed9d13">&#39;Country&#39;</span>) +
-  <span style="color:#447fcf">xlab</span>(<span style="color:#ed9d13">&#39;Life Expectancy (years)&#39;</span>)
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">gapminder <span style="color:#39c">%&gt;%</span> 
+  group_by(country) <span style="color:#39c">%&gt;%</span> 
+  select(year, continent, country, lifeExp) <span style="color:#39c">%&gt;%</span> 
+  ggplot(aes(x <span style="color:#39c">=</span> lifeExp, y <span style="color:#39c">=</span> fct_reorder(country, lifeExp, .fun <span style="color:#39c">=</span> max))) <span style="color:#39c">+</span>
+  theme_minimal() <span style="color:#39c">+</span>
+  geom_line(aes(color <span style="color:#39c">=</span> continent), size <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>) <span style="color:#39c">+</span>
+  geom_point(data <span style="color:#39c">=</span> le_points, aes(shape <span style="color:#39c">=</span> below_med, fill <span style="color:#39c">=</span> year), size <span style="color:#39c">=</span> <span style="color:#cd00cd">2</span>) <span style="color:#39c">+</span>
+  scale_shape_manual(values <span style="color:#39c">=</span> c(<span style="color:#cd00cd">24</span>, <span style="color:#cd00cd">25</span>), name <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;Continent Median&#39;</span>) <span style="color:#39c">+</span>
+  scale_color_manual(values <span style="color:#39c">=</span> cont_colors, name <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;Continent&#39;</span>) <span style="color:#39c">+</span>
+  scale_fill_manual(
+    values <span style="color:#39c">=</span> c(<span style="color:#cd0000">&#39;#FFFFFF&#39;</span>, <span style="color:#cd0000">&#39;#3B60E4&#39;</span>), name <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;Year&#39;</span>, 
+    guide <span style="color:#39c">=</span> guide_legend(override.aes <span style="color:#39c">=</span> list(shape <span style="color:#39c">=</span> <span style="color:#cd00cd">21</span>, size <span style="color:#39c">=</span> <span style="color:#cd00cd">3</span>))
+  ) <span style="color:#39c">+</span>
+  theme(axis.text.y <span style="color:#39c">=</span> element_text(color <span style="color:#39c">=</span> y_ax_colors)) <span style="color:#39c">+</span>
+  ylab(<span style="color:#cd0000">&#39;Country&#39;</span>) <span style="color:#39c">+</span>
+  xlab(<span style="color:#cd0000">&#39;Life Expectancy (years)&#39;</span>)
 </code></pre></div><p><!-- raw HTML omitted --></p>
 <p><p style="text-align:center;">
     <img src="main_plot.png" alt="The final life expectancy plot"  />
@@ -189,13 +187,28 @@ say so myself) to flatten this data into a single image.</p>
 
     
         
-            <a href="/posts">posts</a>
+            <a href="/about">who is rich?</a>
         
     
     
         
             &#183; 
-            <a href="/about">who is rich?</a>
+            <a href="/posts">posts</a>
+        
+            &#183; 
+            <a href="/mailto:rich@posertinlab.com">email</a>
+        
+            &#183; 
+            <a href="https://twitter.com/posertinlab">twitter</a>
+        
+            &#183; 
+            <a href="https://github.com/plethorachutney">github</a>
+        
+            &#183; 
+            <a href="https://orcid.org/0000-0001-9010-2104">orcid</a>
+        
+            &#183; 
+            <a href="https://keybase.io/plethorachutney">keybase</a>
         
     
     

@@ -476,3 +476,38 @@ scheme. Qualitative would have been inappropriate, and divergent would perhaps
 have been more suited to investigating if there were places I went more or less
 than average. However, for this map, most of it is highlighted with few counts,
 so that would not have given much information.
+
+# Bonus
+The choropleth is nice, but it doesn't really capture the invasiveness of Google's
+data like I wanted. So I made an animation of all the datapoints overlaid on
+the map of Portland:
+
+```r
+plot <- portland_df %>% 
+  ggplot() +
+  geom_sf(data = nhoods, fill = '#F7F6C5') +
+  geom_sf(data=river, fill="#3f90df", size=0.0) +
+  geom_path(aes(x = lon, y = lat)) +
+  theme_void()
+
+anim <- plot +
+  transition_time(timestamp) +
+  labs(title = "{frame_time}") +
+  shadow_wake(wake_length = 0.01)
+
+anim_complete <- animate(anim, fps = 30, nframes = 120*30)
+anim_save('since_college.gif', anim_complete)
+```
+
+This took ages to process, but once it was done, the result is **quite** striking:
+![Animation of my entire life since college](since_college.gif)
+
+I think this actually does the best job of any of these plots at conveying
+just how much information Google has on us. You can watch me move, go to work,
+move again, go for long bike rides, the list goes on. And imagine knowing this
+path information for everybody, and having their email, and having their
+texts, and their shopping habits, and their searches, and, and, and...
+You could infer some really insidious stuff!
+There are a few bugs where the whole path moves somewhere it probably shouldn't
+be --- perhaps because there are frames with no data? But it's still quite a
+detailed picture of my life.
