@@ -13,7 +13,7 @@ showDate: yes
 For this project, I'd like to analyze my location data. In the course of tracking
 us 24/7 to sell us ads based on places we just were, Google keeps high-resolution
 information about our location on their servers. You can request a download of this
-(and *tons* of other data) using [Google Takout](https://takeout.google.com). I
+(and *tons* of other data) using [Google Takeout](https://takeout.google.com). I
 think taking a look at what data Google has (more specifically, what data Google
 *publicly admits* it has) and putting this together in a format that the general
 public might consume, perhaps browsing through twitter, could get people to think
@@ -325,7 +325,7 @@ mostly does not know what type of transportation I'm using.
 
 # Final Plot
 
-I think for my final final plot, I'd like to make a chloropleth map of what
+I think for my final final plot, I'd like to make a choropleth map of what
 neighborhoods I spend the most time in. For this, we'll need the shape files
 from our Maps lab, and to make sure everything lines up. I'll just use the data
 since I graduated college, both because that would vastly skew the data to Reed,
@@ -392,7 +392,7 @@ nhoods %>%
 ```
 ![Points for samples](initial_geo.png)
 
-OK! Now we're getting somewhere. I still want to make the chloropleth, but something
+OK! Now we're getting somewhere. I still want to make the choropleth, but something
 I like about this representation is that you can see bike routes I prefer, where
 freeways are, etc. Anyway, now I need to find which points are inside
 which polygons.
@@ -425,7 +425,7 @@ left_join(nhoods, counted_tibble) %>%
   geom_sf(data=river, fill="#3f90df", size=0.0)
   
 ```
-![Basic chloropleth](first_chloropleth.png)
+![Basic choropleth](first_chloropleth.png)
 
 A few things: we need to control for the area of each neighborhood, and then figure
 out a good scale for displaying things.
@@ -448,13 +448,15 @@ counted_nhoods %>%
     name = 'Area-normalized location samples'
   )
 ```
-![Final chloropleth](final_chloropleth.png)
+![Final choropleth](final_chloropleth.png)
 
 # Discussion
 
-This chloropleth gives a decent sense of where I have been over the past six years
-of my life. Obviously, regions outside Portland are not captured, and we could
-investigate specific roads and more. However, a chloropleth is intuitive, and I
+This **choropleth** gives a decent sense of where I have been over the past six years
+of my life. Darker red neighborhoods represent neighborhoods I have spent more time
+in, controlling for the area of that neighborhood.
+Obviously, regions outside Portland are not captured, and we could
+investigate specific roads and more. However, a choropleth is intuitive, and I
 think it would be more striking to my intended audience that watching my dot
 travel along roads.
 
