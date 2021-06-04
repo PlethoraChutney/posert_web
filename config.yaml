@@ -4,6 +4,7 @@ defaultContentLanguage: en
 isMultilingual: no
 title: rich posert - grad
 theme: hugo-theme-sam
+font: 'Open Sans'
 pygmentsStyle: 'vim'
 pygmentsCodefences: yes
 params:
