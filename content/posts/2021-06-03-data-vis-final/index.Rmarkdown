@@ -8,6 +8,10 @@ tags: ['classwork']
 showDate: yes
 ---
 
+# Presentation
+There is a [five-minute presentation](/pages/bmi-presentation/) that covers the basics of this plot and
+data exploration, but this is much more in-depth.
+
 # Project Concept
 
 For this project, I'd like to analyze my location data. In the course of tracking
