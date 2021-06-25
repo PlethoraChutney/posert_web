@@ -13,7 +13,8 @@
       <pubDate>Thu, 03 Jun 2021 00:00:00 +0000</pubDate>
       
       <guid>https://example.com/posts/2021-06-03-data-vis-final/</guid>
-      <description>Project Concept&amp;nbsp;¶ For this project, I&amp;rsquo;d like to analyze my location data. In the course of tracking us 24/7 to sell us ads based on places we just were, Google keeps high-resolution information about our location on their servers. You can request a download of this (and tons of other data) using Google Takeout. I think taking a look at what data Google has (more specifically, what data Google publicly admits it has) and putting this together in a format that the general public might consume, perhaps browsing through twitter, could get people to think a bit more deeply about how surveilled we are.</description>
+      <description>Presentation&amp;nbsp;¶There is a five-minute presentation that covers the basics of this plot and data exploration, but this is much more in-depth.
+Project Concept&amp;nbsp;¶For this project, I&amp;rsquo;d like to analyze my location data. In the course of tracking us 24/7 to sell us ads based on places we just were, Google keeps high-resolution information about our location on their servers. You can request a download of this (and tons of other data) using Google Takeout.</description>
     </item>
     
     <item>

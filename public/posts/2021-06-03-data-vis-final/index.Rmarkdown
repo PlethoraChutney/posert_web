@@ -8,6 +8,10 @@ tags: ['classwork']
 showDate: yes
 ---
 
+# Presentation
+There is a [five-minute presentation](/pages/bmi-presentation/) that covers the basics of this plot and
+data exploration, but this is much more in-depth.
+
 # Project Concept
 
 For this project, I'd like to analyze my location data. In the course of tracking
@@ -505,4 +509,9 @@ This took ages to process, but once it was done, the result is **quite** strikin
 I think this actually does the best job of any of these plots at conveying
 just how much information Google has on us. You can watch me move, go to work,
 move again, go for long bike rides, the list goes on. And imagine knowing this
-path information for everybody! You can infer some really insidious stuff!
+path information for everybody, and having their email, and having their
+texts, and their shopping habits, and their searches, and, and, and...
+You could infer some really insidious stuff!
+There are a few bugs where the whole path moves somewhere it probably shouldn't
+be --- perhaps because there are frames with no data? But it's still quite a
+detailed picture of my life.

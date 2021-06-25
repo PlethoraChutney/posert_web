@@ -41,10 +41,12 @@
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Data Vis - Final"/>
-<meta name="twitter:description" content="Project Concept&nbsp;¶ For this project, I&rsquo;d like to analyze my location data. In the course of tracking us 24/7 to sell us ads based on places we just were, Google keeps high-resolution information about our location on their servers. You can request a download of this (and tons of other data) using Google Takeout. I think taking a look at what data Google has (more specifically, what data Google publicly admits it has) and putting this together in a format that the general public might consume, perhaps browsing through twitter, could get people to think a bit more deeply about how surveilled we are."/>
+<meta name="twitter:description" content="Presentation&nbsp;¶There is a five-minute presentation that covers the basics of this plot and data exploration, but this is much more in-depth.
+Project Concept&nbsp;¶For this project, I&rsquo;d like to analyze my location data. In the course of tracking us 24/7 to sell us ads based on places we just were, Google keeps high-resolution information about our location on their servers. You can request a download of this (and tons of other data) using Google Takeout."/>
 
 <meta property="og:title" content="Data Vis - Final" />
-<meta property="og:description" content="Project Concept&nbsp;¶ For this project, I&rsquo;d like to analyze my location data. In the course of tracking us 24/7 to sell us ads based on places we just were, Google keeps high-resolution information about our location on their servers. You can request a download of this (and tons of other data) using Google Takeout. I think taking a look at what data Google has (more specifically, what data Google publicly admits it has) and putting this together in a format that the general public might consume, perhaps browsing through twitter, could get people to think a bit more deeply about how surveilled we are." />
+<meta property="og:description" content="Presentation&nbsp;¶There is a five-minute presentation that covers the basics of this plot and data exploration, but this is much more in-depth.
+Project Concept&nbsp;¶For this project, I&rsquo;d like to analyze my location data. In the course of tracking us 24/7 to sell us ads based on places we just were, Google keeps high-resolution information about our location on their servers. You can request a download of this (and tons of other data) using Google Takeout." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://example.com/posts/2021-06-03-data-vis-final/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-06-03T00:00:00&#43;00:00" />
@@ -75,7 +77,7 @@
         
 <div class="flex-container">
     <aside role="complementary">
-        Thu Jun 03, 2021 &#183; 2321 words
+        Thu Jun 03, 2021 &#183; 2549 words
         <div class="tag-container">
             
             
@@ -91,6 +93,10 @@
     <hr />
     <article role="article">
         
+<h1 id="presentation" class="anchor-link"><a href="#presentation">Presentation<span class="pilcrow">&nbsp;¶</span></a></h1>
+<p>There is a <a href="/pages/bmi-presentation/">five-minute presentation</a> that covers the basics of this plot and
+data exploration, but this is much more in-depth.</p>
+
 <h1 id="project-concept" class="anchor-link"><a href="#project-concept">Project Concept<span class="pilcrow">&nbsp;¶</span></a></h1>
 <p>For this project, I&rsquo;d like to analyze my location data. In the course of tracking
 us 24/7 to sell us ads based on places we just were, Google keeps high-resolution
@@ -500,6 +506,39 @@ scheme. Qualitative would have been inappropriate, and divergent would perhaps
 have been more suited to investigating if there were places I went more or less
 than average. However, for this map, most of it is highlighted with few counts,
 so that would not have given much information.</p>
+
+<h1 id="bonus" class="anchor-link"><a href="#bonus">Bonus<span class="pilcrow">&nbsp;¶</span></a></h1>
+<p>The choropleth is nice, but it doesn&rsquo;t really capture the invasiveness of Google&rsquo;s
+data like I wanted. So I made an animation of all the datapoints overlaid on
+the map of Portland:</p>
+<div class="highlight"><pre style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">plot <span style="color:#39c">&lt;-</span> portland_df <span style="color:#39c">%&gt;%</span> 
+  ggplot() <span style="color:#39c">+</span>
+  geom_sf(data <span style="color:#39c">=</span> nhoods, fill <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;#F7F6C5&#39;</span>) <span style="color:#39c">+</span>
+  geom_sf(data<span style="color:#39c">=</span>river, fill<span style="color:#39c">=</span><span style="color:#cd0000">&#34;#3f90df&#34;</span>, size<span style="color:#39c">=</span><span style="color:#cd00cd">0.0</span>) <span style="color:#39c">+</span>
+  geom_path(aes(x <span style="color:#39c">=</span> lon, y <span style="color:#39c">=</span> lat)) <span style="color:#39c">+</span>
+  theme_void()
+
+anim <span style="color:#39c">&lt;-</span> plot <span style="color:#39c">+</span>
+  transition_time(timestamp) <span style="color:#39c">+</span>
+  labs(title <span style="color:#39c">=</span> <span style="color:#cd0000">&#34;{frame_time}&#34;</span>) <span style="color:#39c">+</span>
+  shadow_wake(wake_length <span style="color:#39c">=</span> <span style="color:#cd00cd">0.01</span>)
+
+anim_complete <span style="color:#39c">&lt;-</span> animate(anim, fps <span style="color:#39c">=</span> <span style="color:#cd00cd">30</span>, nframes <span style="color:#39c">=</span> <span style="color:#cd00cd">120</span><span style="color:#39c">*</span><span style="color:#cd00cd">30</span>)
+anim_save(<span style="color:#cd0000">&#39;since_college.gif&#39;</span>, anim_complete)
+</code></pre></div><p>This took ages to process, but once it was done, the result is <strong>quite</strong> striking:
+<p style="text-align:center;">
+    <img src="since_college.gif" alt="Animation of my entire life since college"  />
+</p>
+</p>
+<p>I think this actually does the best job of any of these plots at conveying
+just how much information Google has on us. You can watch me move, go to work,
+move again, go for long bike rides, the list goes on. And imagine knowing this
+path information for everybody, and having their email, and having their
+texts, and their shopping habits, and their searches, and, and, and&hellip;
+You could infer some really insidious stuff!
+There are a few bugs where the whole path moves somewhere it probably shouldn&rsquo;t
+be &mdash; perhaps because there are frames with no data? But it&rsquo;s still quite a
+detailed picture of my life.</p>
 
     </article>
 </div>
