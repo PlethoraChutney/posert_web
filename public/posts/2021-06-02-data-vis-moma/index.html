@@ -50,7 +50,7 @@ library(tidyverse) library(ggplot2) moma &lt;- read_csv(&#39;data/artworks-clean
 First I load the data and flip all paintings to be taller than they are wide.
 library(tidyverse) library(ggplot2) moma &lt;- read_csv(&#39;data/artworks-cleaned.csv&#39;) moma_symm &lt;- moma %&gt;% mutate(symm_width = if_else(width_cm &lt; height_cm, width_cm, height_cm), symm_height = if_else(width_cm &lt; height_cm, height_cm, width_cm)) moma_symm %&gt;% mutate(longer_than_wide = symm_height &lt;= symm_width) %&gt;% ggplot(aes(x = symm_width, y = symm_height, color = longer_than_wide)) &#43; theme_minimal() &#43; geom_point(alpha = 0." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://example.com/posts/2021-06-02-data-vis-moma/" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://posert-lab-blog.netlify.app/posts/2021-06-02-data-vis-moma/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-06-02T00:00:00&#43;00:00" />
 <meta property="article:modified_time" content="2021-06-02T00:00:00&#43;00:00" /><meta property="og:site_name" content="rich posert - grad" />
 

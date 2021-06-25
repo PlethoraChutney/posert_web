@@ -2,40 +2,40 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://example.com/categories/bmi-525/</loc>
+    <loc>https://posert-lab-blog.netlify.app/categories/bmi-525/</loc>
     <lastmod>2021-06-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.com/categories/</loc>
+    <loc>https://posert-lab-blog.netlify.app/categories/</loc>
     <lastmod>2021-06-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.com/tags/classwork/</loc>
+    <loc>https://posert-lab-blog.netlify.app/tags/classwork/</loc>
     <lastmod>2021-06-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.com/posts/2021-06-03-data-vis-final/</loc>
+    <loc>https://posert-lab-blog.netlify.app/posts/2021-06-03-data-vis-final/</loc>
     <lastmod>2021-06-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.com/</loc>
+    <loc>https://posert-lab-blog.netlify.app/</loc>
     <lastmod>2021-06-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.com/tags/</loc>
+    <loc>https://posert-lab-blog.netlify.app/tags/</loc>
     <lastmod>2021-06-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.com/about/</loc>
+    <loc>https://posert-lab-blog.netlify.app/about/</loc>
     <lastmod>2021-06-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.com/posts/2021-06-02-data-vis-hot-dogs/</loc>
+    <loc>https://posert-lab-blog.netlify.app/posts/2021-06-02-data-vis-hot-dogs/</loc>
     <lastmod>2021-06-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.com/posts/2021-06-02-data-vis-life-expectancy/</loc>
+    <loc>https://posert-lab-blog.netlify.app/posts/2021-06-02-data-vis-life-expectancy/</loc>
     <lastmod>2021-06-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.com/posts/2021-06-02-data-vis-maps/</loc>
+    <loc>https://posert-lab-blog.netlify.app/posts/2021-06-02-data-vis-maps/</loc>
     <lastmod>2021-06-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.com/posts/2021-06-02-data-vis-moma/</loc>
+    <loc>https://posert-lab-blog.netlify.app/posts/2021-06-02-data-vis-moma/</loc>
     <lastmod>2021-06-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.com/posts/</loc>
+    <loc>https://posert-lab-blog.netlify.app/posts/</loc>
     <lastmod>2021-06-02T00:00:00+00:00</lastmod>
   </url>
 </urlset>

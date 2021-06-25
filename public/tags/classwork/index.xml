@@ -2,47 +2,47 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>classwork on rich posert - grad</title>
-    <link>https://example.com/tags/classwork/</link>
+    <link>https://posert-lab-blog.netlify.app/tags/classwork/</link>
     <description>Recent content in classwork on rich posert - grad</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 03 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://example.com/tags/classwork/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 03 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://posert-lab-blog.netlify.app/tags/classwork/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Data Vis - Final</title>
-      <link>https://example.com/posts/2021-06-03-data-vis-final/</link>
+      <link>https://posert-lab-blog.netlify.app/posts/2021-06-03-data-vis-final/</link>
       <pubDate>Thu, 03 Jun 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://example.com/posts/2021-06-03-data-vis-final/</guid>
+      <guid>https://posert-lab-blog.netlify.app/posts/2021-06-03-data-vis-final/</guid>
       <description>Presentation&amp;nbsp;¶There is a five-minute presentation that covers the basics of this plot and data exploration, but this is much more in-depth.
 Project Concept&amp;nbsp;¶For this project, I&amp;rsquo;d like to analyze my location data. In the course of tracking us 24/7 to sell us ads based on places we just were, Google keeps high-resolution information about our location on their servers. You can request a download of this (and tons of other data) using Google Takeout.</description>
     </item>
     
     <item>
       <title>Data Vis - Hot Dogs</title>
-      <link>https://example.com/posts/2021-06-02-data-vis-hot-dogs/</link>
+      <link>https://posert-lab-blog.netlify.app/posts/2021-06-02-data-vis-hot-dogs/</link>
       <pubDate>Wed, 02 Jun 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://example.com/posts/2021-06-02-data-vis-hot-dogs/</guid>
+      <guid>https://posert-lab-blog.netlify.app/posts/2021-06-02-data-vis-hot-dogs/</guid>
       <description>Our first lab! I think there&amp;rsquo;s something very satisfying about working with silly datasets. Also, the colorschemes chosen here are quite good, I think. Gave me more to think about!
 library(tidyverse) hdm_affil &amp;lt;- read_csv(here(&amp;#34;data&amp;#34;, &amp;#34;hot_dog_contest_with_affiliation.csv&amp;#34;), col_types = cols( affiliated = col_factor(levels = NULL), gender = col_factor(levels = NULL) )) %&amp;gt;% mutate(post_ifoce = year &amp;gt;= 1997) %&amp;gt;% filter(year &amp;gt;= 1981 &amp;amp; gender == &amp;#34;male&amp;#34;) hdm_affil %&amp;gt;% ggplot(aes(x = year, y = num_eaten, fill = affiliated)) + geom_col() + labs(x = &amp;#34;Year&amp;#34;, y = &amp;#34;Hot Dogs and Buns Consumed&amp;#34;) + ggtitle(&amp;#34;Nathan&amp;#39;s Hot Dog Eating Contest Results, 1981-2017&amp;#34;) + theme_minimal() + scale_fill_manual( values = c(&amp;#39;#E9602B&amp;#39;,&amp;#39;#2277A0&amp;#39;,&amp;#39;#CCB683&amp;#39;), name = &amp;#39;IFOCE-affiliation&amp;#39; ) + scale_y_continuous(expand = c(0,0), breaks = seq(0, 70, 10)) + scale_x_continuous(expand = c(0,0)) + coord_cartesian(xlim = c(1980, 2018), ylim = c(0, 80)) + theme(plot.</description>
     </item>
     
     <item>
       <title>Data Vis - Life Expectancy</title>
-      <link>https://example.com/posts/2021-06-02-data-vis-life-expectancy/</link>
+      <link>https://posert-lab-blog.netlify.app/posts/2021-06-02-data-vis-life-expectancy/</link>
       <pubDate>Wed, 02 Jun 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://example.com/posts/2021-06-02-data-vis-life-expectancy/</guid>
+      <guid>https://posert-lab-blog.netlify.app/posts/2021-06-02-data-vis-life-expectancy/</guid>
       <description>For this assignment, we were tasked with looking through the gapminder dataset, tidying it, and producing some tables and visualizations. I&amp;rsquo;m quite happy with my process for this graph, even though it ended up a bit busy. The first step was loading up the data and taking a look.
 glimpse(gapminder) ## Rows: 1,704## Columns: 6## $ country &amp;lt;fct&amp;gt; Afghanistan, Afghanistan, Afghanistan, Afghanistan, Afgha...## $ continent &amp;lt;fct&amp;gt; Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asia, Asi.</description>
     </item>
     
     <item>
       <title>Data Vis - Maps</title>
-      <link>https://example.com/posts/2021-06-02-data-vis-maps/</link>
+      <link>https://posert-lab-blog.netlify.app/posts/2021-06-02-data-vis-maps/</link>
       <pubDate>Wed, 02 Jun 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://example.com/posts/2021-06-02-data-vis-maps/</guid>
+      <guid>https://posert-lab-blog.netlify.app/posts/2021-06-02-data-vis-maps/</guid>
       <description>For this assignment we were meant to investigate some geographic data and plot it on a map of Portland. I was particularly interested in the housing data, and wondered if the housing density would be interesting.
 The first step is reading in Portland GIS&amp;rsquo;s data and reading in housing data.
 pdx_boundaries &amp;lt;- st_read(&amp;#39;data/Neighborhoods__Regions_-shp/&amp;#39;) river_boundaries &amp;lt;- st_read( &amp;#39;data/Willamette_Columbia_River_Ordinary_High_Water-shp/&amp;#39; ) housing &amp;lt;- read_excel( &amp;#34;data/Census_2010_Data_Cleanedup.xlsx&amp;#34;, sheet = &amp;#34;Census_2010_Neighborhoods&amp;#34;, range = &amp;#39;A6:CW101&amp;#39; ) %&amp;gt;% select( &amp;#39;Neighborhood&amp;#39; = starts_with(&amp;#39;NEIGHBOR&amp;#39;), &amp;#39;Total_Housing&amp;#39; = &amp;#39;H0010001&amp;#39;, &amp;#39;Area&amp;#39; = &amp;#39;AREALAND&amp;#39; ) %&amp;gt;% mutate(Area = Area/2589988) %&amp;gt;% mutate(Housing_Per_Mi = Total_Housing/Area) # rename census neighborhoods housing &amp;lt;- housing %&amp;gt;% mutate(Neighborhood=recode(Neighborhood, &amp;#34;ARGAY&amp;#34; = &amp;#34;ARGAY TERRACE&amp;#34;, &amp;#34;BROOKLYN&amp;#34; = &amp;#34;BROOKLYN ACTION CORPS&amp;#34;, &amp;#34;BUCKMAN&amp;#34; = &amp;#34;BUCKMAN COMMUNITY ASSOCIATION&amp;#34;, &amp;#34;CENTENNIAL&amp;#34; = &amp;#34;CENTENNIAL COMMUNITY ASSOCIATION&amp;#34;, &amp;#34;CULLY&amp;#34; = &amp;#34;CULLY ASSOCIATION OF NEIGHBORS&amp;#34;, &amp;#34;CENTENNIAL&amp;#34; = &amp;#34;CENTENNIAL COMMUNITY ASSOCIATION&amp;#34;, &amp;#34;DOWNTOWN&amp;#34; = &amp;#34;PORTLAND DOWNTOWN&amp;#34;, &amp;#34;GOOSE HOLLOW&amp;#34; = &amp;#34;GOOSE HOLLOW FOOTHILLS LEAGUE&amp;#34;, &amp;#34;HAYDEN ISLAND&amp;#34; = &amp;#34;HAYDEN ISLAND NEIGHBORHOOD NETWORK&amp;#34;, &amp;#34;HOSFORD-ABERNETHY&amp;#34; = &amp;#34;HOSFORD-ABERNETHY NEIGHBORHOOD DISTRICT ASSN.</description>
@@ -50,10 +50,10 @@ pdx_boundaries &amp;lt;- st_read(&amp;#39;data/Neighborhoods__Regions_-shp/&amp;
     
     <item>
       <title>Data Vis - MoMA</title>
-      <link>https://example.com/posts/2021-06-02-data-vis-moma/</link>
+      <link>https://posert-lab-blog.netlify.app/posts/2021-06-02-data-vis-moma/</link>
       <pubDate>Wed, 02 Jun 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://example.com/posts/2021-06-02-data-vis-moma/</guid>
+      <guid>https://posert-lab-blog.netlify.app/posts/2021-06-02-data-vis-moma/</guid>
       <description>This was an early assignment, just getting used to working with data in R. Nevertheless, I did a fun little investigation of the ratios of paintings, and if artists had a preferred ratio (or at least, if the curators of MoMA do).
 First I load the data and flip all paintings to be taller than they are wide.
 library(tidyverse) library(ggplot2) moma &amp;lt;- read_csv(&amp;#39;data/artworks-cleaned.csv&amp;#39;) moma_symm &amp;lt;- moma %&amp;gt;% mutate(symm_width = if_else(width_cm &amp;lt; height_cm, width_cm, height_cm), symm_height = if_else(width_cm &amp;lt; height_cm, height_cm, width_cm)) moma_symm %&amp;gt;% mutate(longer_than_wide = symm_height &amp;lt;= symm_width) %&amp;gt;% ggplot(aes(x = symm_width, y = symm_height, color = longer_than_wide)) + theme_minimal() + geom_point(alpha = 0.</description>
