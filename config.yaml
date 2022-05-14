@@ -1,6 +1,6 @@
-baseURL: https://example.com
+baseURL: https://blog.posertinlab.com
 languageCode: en-us
-title: Personal website and blog
+title: Rich Posert - Graduate Student
 theme: "hugo-refresh"
 
 #########################################

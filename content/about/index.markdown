@@ -7,6 +7,7 @@ categories: []
 tags: []
 showDate: no
 showInMenu: true
+hideLastModified: yes
 ---
 
 My name is Rich Posert. I enjoy reading, cycling, backpacking, and cooking. The video on the main page
