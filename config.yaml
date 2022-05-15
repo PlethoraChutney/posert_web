@@ -1,213 +1,132 @@
-baseURL: https://blog.posertinlab.com
-languageCode: en-us
-title: Rich Posert - Graduate Student
-theme: "hugo-refresh"
+baseURL: "https://blog.posertinlab.com/"
+title: Posert Blog
+paginate: 5
+theme: "hugo-PaperMod"
 
-#########################################
-######## Uncomment this option ##########
-#########################################
-# This options specify where to look for the images used in this config
-# The default value is the "asset" directory of this theme
-assetDir: "static"
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpired: false
 
-# Option to specify the default language of the theme
-# I.e., the landing language of your root
-DefaultContentLanguage: en
+googleAnalytics: UA-123-45
 
-## Option to disable additional language in your site.
-disableLanguages: ["ru"]
-
-disableKinds: ["sitemap","RSS"]
-
-# Option to specify that all links will be open in a new tab.
-blackfriday:
-  hrefTargetBlank: false
-
-Taxonomies:
-  tag: "tags"
-
-# Supported fonts are:
-# https://fonts.google.com/
-
-# Icons taken from:
-# https://konpa.github.io/devicon/
-# https://bulkitv2.cssninja.io/_components-icons-fa.html
+minify:
+  disableXML: true
+  minifyOutput: true
 
 params:
-  # parameter used to specify the number of article in each row
-  # for the summary pages, the possible options are: 2, 3, 4, 5 or 6
-  articlesPerRow: 3
+  env: production # to enable google analytics, opengraph, twitter-cards and schema.
+  title: Rich Posert, a grad student
+  description: "Rich's personal site"
+  keywords: ['Blog', 'Portfolio']
+  author: 'Rich Posert'
+  # author: ["Me", "You"] # multiple authors
+  images: ["<link or path of image for opengraph, twitter-cards>"]
+  DateFormat: "January 2, 2006"
+  defaultTheme: auto # dark, light
+  disableThemeToggle: false
 
-  # option to specify the favicon image of the site
-  # the path is relative to the folder "assetDir" of this configuration
-  favicon: "/images/favicon.svg"
+  ShowReadingTime: true
+  ShowShareButtons: false
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  ShowWordCount: false
+  ShowRssButtonInSectionTermList: false
+  UseHugoToc: true
+  disableSpecial1stPost: false
+  disableScrollToTop: false
+  comments: false
+  hidemeta: false
+  hideSummary: false
+  showtoc: false
+  tocopen: false
 
-  # parameter used to specify if you want to minify the imported js
-  jsMinify: false
-  # parameter used to specify if you want to minify the imported css
-  cssMinify: false
-  # parameter used to specify if you want to calculate the css integrity
-  cssIntegrity: true
-  # parameter used to specify if you want to calculate the js integrity
-  jsIntegrity: true
-  # option to specify the main colour of the theme
-  mainColour: "#F39200"
+  assets:
+    # disableHLJS: true # to disable highlight.js
+    # disableFingerprinting: true
+    # favicon: "<link / abs url>"
+    # favicon16x16: "<link / abs url>"
+    # favicon32x32: "<link / abs url>"
+    # apple_touch_icon: "<link / abs url>"
+    # safari_pinned_tab: "<link / abs url>"
 
-  # summary options
-  summary:
-    # option to specify the default image in the summary list
-    # the starting folder is configure in "assetDir" of this file
-    defaultImage : "/images/default_summary.jpg"
+  label:
+    text: "Home"
+    # icon: /apple-touch-icon.png
+    iconHeight: 35
 
-  # loading options
-  loading:
-    # option to specify the loading image
-    # the starting folder is configure in "assetDir" of this file
-    image: "/images/loaders/rings.svg"
+  # profile-mode
+  profileMode:
+    enabled: false # needs to be explicitly set
+    title: "Posert Blog"
+    subtitle: "This is subtitle"
+    imageUrl: "<img location>"
+    imageWidth: 120
+    imageHeight: 120
+    imageTitle: my image
+    buttons:
+      - name: Posts
+        url: posts
+      - name: Tags
+        url: tags
 
-  # main pages options
-  mainPage:
-    # option to specify the main font of the theme
-    fontFamily: "Poppins"
+  # home-info mode
+  homeInfoParams:
+    Title: "Rich Posert is a graduate student"
+    Content: "I work on ENaC, but I really enjoy data visualization and designing talks."
 
-  # sidebar options
-  sidebar:
-    # option to specify the logo of the sidebar
-    # the starting folder is configure in "assetDir" of this file
-    logo: "/images/refresh-square.svg"
-    # option to specify the font of the sidebar
-    fontFamily: "Poppins" # "Open Sans"
+  socialIcons:
+    - name: twitter
+      url: "https://twitter.com/posertInLab"
+    - name: github
+      url: "https://github.com/PlethoraChutney"
 
-  # navbar options
-  navbar:
-    # option to specify the font used in the navbar
-    fontFamily: "Poppins"
-    # option to show the little logos on the side of the navbar items
-    showIcons: false
+  cover:
+    hidden: true # hide everywhere but not in structured data
+    hiddenInList: true # hide on list pages and home
+    hiddenInSingle: true # hide on single page
 
-  # 404 page options
-  pagNotFound:
-    # option to specify the main picture of the sidebar
-    # the starting folder is configure in "assetDir" of this file
-    image: "/images/avataaars_404.png"
-    # option to specify the title of the 404 page
-    title: 404 Page Not Found :(
-    # option to specify the subtitle of the 404 page
-    subtitle: This is not the page you were looking for...
-    # option to specify the width of the image in the 404 page
-    imageWidth: 500px
+  # editPost:
+  #   URL: "https://github.com/<path_to_repo>/content"
+  #   Text: "Suggest Changes" # edit text
+  #   appendFilePath: true # to append file path to Edit link
 
-  # homepage options
-  homepage:
-    # this options let you specify if you want a link to the homepage
-    # it can be: "none", "menu", "footer" or "menu+footer"
-    linkPosition: "menu+footer"
-    # this options let you specify the text of the link to the homepage
-    linkText: "Home"
-    # option to specify the title in the homepage
-    title: Rich Posert
-    # option to specify the subtitle in the homepage
-    subtitle: Graphs for love and money
-    # option to specify image in the homepage
-    image: "/images/green-mug.jpg"
-    # option to specify the width of the image in the homepage
-    imageWidth: 500px
+  # for search
+  # https://fusejs.io/api/options.html
+  fuseOpts:
+    isCaseSensitive: false
+    shouldSort: true
+    location: 0
+    distance: 1000
+    threshold: 0.4
+    minMatchCharLength: 0
+    keys: ["title", "permalink", "summary", "content"]
+menu:
+  main:
+    - identifier: about
+      name: about
+      url: /about/
+      weight: 20
+    - identifier: categories
+      name: categories
+      url: /categories/
+      weight: 20
+    - identifier: tags
+      name: tags
+      url: /tags/
+      weight: 20
+    - identifier: archive
+      name: archive
+      url: /archives/
+      weight: 20
 
-  # footer options
-  footer:
-    # option to specify the logo in the footer
-    # the starting folder is configure in "assetDir" of this file
-    logo: "/images/refresh-square.svg"
-    # option to specify your contact email in the footer
-    email:
-      link: rich@posertinlab.com
-      title: My Email
-    # option to specify your linkedin profile in the footer
-    linkedin:
-      link: https://www.linkedin.com/in/richard-posert-ab418b166/
-      title: LinkedIn
-    # option to specify your facebook account in the footer;
-    # **uncomment** the lines below to show in footer
-    # facebook:
-    #   link: your.username
-    #   title: Facebook
-    # option to specify your github account in the footer;
-    # **uncomment** the below lines to show in footer
-    github:
-      link: PlethoraChutney
-      title: Github
-    # option to specify your gitlab account in the footer;
-    # **uncomment** the below lines to show in footer
-    # gitlab:
-    #   link: username
-    #   title: Gitlab
-    # option to specify your twitter username in the footer;
-    # **uncomment** the below lines to show in footer
-    twitter:
-       link: posertInLab
-       title: Twitter
-    # option to specify your instagram username in the footer;
-    # **uncomment** the below lines to show in footer
-    # instagram:
-    #    link: username
-    #    title: Instagram
-    # option to specify your telegram username in the footer;
-    # **uncomment** the below lines to show in footer
-    # telegram:
-    #    link: username
-    #    title: Telegram
-    # option to specify the copyright in the footer
-    # copyright: Julia The White - 2021
-
-###################################################################
-################## multilanguage support options ##################
-###################################################################
-languages:
-  en:
-    languageName:       English
-    weight:             1
-  ru:
-    languageName:       Russian
-    weight:             2
-    # When Specifying different parameters for a different language
-    # you need to specify all the mandatory sub-parameters as well.
-    # E.g.: if you specify the "homepage" parameter then you need to
-    #       specify all mandatory sub-parameters, e.g.: "title".
-    # See example below:
-    params:
-      homepage:
-        title: Julia белая краска
-        subtitle: Персональный сайт и блог
-        image: "/images/avataaars.png" # worker.svg
-        imageWidth: 500px
-
-      # Some sub-parameters of the "footer" parameter
-      # can be omitted because the code allows for them to be
-      # missed but they will treated as they do not exist,
-      # i.e., the parameters of the default language
-      # won't be inherited.
-      footer:
-        logo: "/images/refresh-square.svg"
-        email:
-          link: имя.фамилия@домен.com
-          title: Эл. адрес
-        linkedin:
-          link: your_linkedin_profile
-          title: LinkedIn
-        # facebook:
-        #   link: your.username
-        #   title: Facebook
-        # twitter:
-        #   link: username
-        #   title: Twitter
-        # instagram:
-        #   link: username
-        #   title: Instagram
-        # github:
-        #   link: username
-        #   title: Github
-        # gitlab:
-        #   link: username
-        #   title: Gitlab
-        copyright: Julia белая краска - 2020
-
+# Read: https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#using-hugos-syntax-highlighter-chroma
+# pygmentsUseClasses: true
+# markup:
+#     highlight:
+#         # anchorLineNos: true
+#         codeFences: true
+#         guessSyntax: true
+#         lineNos: true
+#         style: monokai

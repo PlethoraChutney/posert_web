@@ -11,6 +11,5 @@ options(
   blogdown.knit.on_save = FALSE,
   blogdown.author = "Rich Posert",
   blogdown.ext = ".Rmarkdown",
-  blogdown.subdir = "postsy
-  "
+  blogdown.subdir = "posts"
 )
