@@ -1,4 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri&family=JetBrains+Mono&family=Poppins&display=swap');
+
 .post-content img {
   display: block;
   margin: auto;
+}
+
+.post-content pre code {
+  color: #9aa5ce;
+}
+
+h1, h2, h3, h4 {
+  font-family: Poppins, sans-serif;
+}
+
+p {
+  font-family: "Hind Siliguri", sans-serif;
+}
+
+code {
+  font-family: "JetBrains Mono", monospace;
 }
