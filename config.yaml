@@ -21,7 +21,7 @@ params:
   keywords: ['Blog', 'Portfolio']
   author: 'Rich Posert'
   # author: ["Me", "You"] # multiple authors
-  images: ["<link or path of image for opengraph, twitter-cards>"]
+  images: ["/img/green-mug.jpg"]
   DateFormat: "January 2, 2006"
   defaultTheme: auto # dark, light
   disableThemeToggle: false
