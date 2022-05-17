@@ -19,4 +19,5 @@ p {
 
 code {
   font-family: "JetBrains Mono", monospace;
+  font-variant-ligatures: none;
 }

@@ -130,3 +130,8 @@ markup:
         guessSyntax: false
         lineNos: false
         style: "Tokyo Night Dark"
+
+    # allow ggplot plots to be rendered in raw html
+    goldmark:
+      renderer:
+        unsafe: true

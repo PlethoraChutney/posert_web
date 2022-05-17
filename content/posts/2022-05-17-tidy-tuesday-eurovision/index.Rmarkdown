@@ -1,0 +1,165 @@
+---
+title: Tidy Tuesday - Eurovision
+author: Rich Posert
+date: '2022-05-17'
+slug: []
+categories: ['Data Visualization']
+tags: ['TidyTuesday']
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+
+I know next to nothing about Eurovision, so this will be a learning exercise
+in more ways than one. I know it's a song competition, that each country submits
+one contestant, and that Australia is in it. I also think that there's a meme
+about the UK being bad at it.
+
+## First Impressions
+
+Let's load up the data and see what we're dealing with:
+
+```{r load-data}
+library(tidyverse)
+full_tt_dataset <- tidytuesdayR::tt_load('2022-05-17')
+eurovision <- full_tt_dataset$eurovision
+votes <- full_tt_dataset$`eurovision-votes`
+
+glimpse(eurovision)
+glimpse(votes)
+```
+
+Wow! The first ideas that jump out to me are:
+ 1. How often does the host country win? Is there a home field advantage?
+ 
+This question
+would be difficult to answer though, since I have no idea how often a country is expected
+to win in the first place. Presumably if you (as a country) love Eurovision, you're more
+likely to both find good acts and to want to host it, so I doubt the two events can
+be treated as independent.
+
+ 2. Which artists have competed the most times? And when?
+ 3. Are the trajectories of countries' placements (i.e., winner, second place, etc.) interesting?
+ 4. Are voters more likely to vote for their own country if they're the host?
+ 
+Ignoring question 1 since I don't think I'd be able to answer it, let's explore the
+data:
+
+## Prolific Artists
+
+```{r prolific-artists}
+eurovision |> 
+  count(artist) |> 
+  count(n)
+```
+
+Alright, nobody has performed more than 4 times, and ten people have performed
+4 times. Not particularly interesting.
+
+## Rags to Riches
+
+I wonder if we can see any rags-to-riches or fall-from-grace stories in how
+well the countries do each year:
+
+```{r country-placements, dev='png'}
+eurovision |> 
+  ggplot(aes(x = year, y = rank, group = artist_country)) +
+  geom_line()
+```
+
+Hm...that's hard to read and I'm realising it's also upside down (1st place should be
+at the top).
+
+Maybe if we filter to just countries who've ever won a Eurovision contest we can
+see a bit more of what I'm looking for.
+
+```{r filter-first}
+winners <- eurovision |> 
+  filter(winner)
+
+winners <- unique(winners$artist_country)
+
+eurovision |>
+  filter(artist_country %in% winners) |> 
+  ggplot(aes(x = year, y = rank, group = artist_country)) +
+  geom_line() +
+  scale_y_reverse()
+```
+
+Turns out only three countries have never won Eurovision. Actually, that's funny.
+Who are they?
+
+```{r}
+eurovision |> 
+  filter(!(artist_country %in% winners)) |> 
+  ggplot(aes(x = year, y = rank, color = artist_country)) +
+  geom_line() +
+  scale_y_reverse()
+```
+
+You'll get there soon Andorra, Morocco, and Slovakia!
+
+As a last-ditch attempt to look at this question, let's see if we can target
+countries who started Eurovision in the bottom third and have recently placed
+in the top third.
+
+```{r}
+# find bottom third cutoffs for each year
+loser_cutoffs <- eurovision |> 
+  filter(section == 'grand-final') |> 
+  group_by(year) |> 
+  summarise(bottom_third = as.integer(n() - (n() / 3)))
+
+# find each country's "early years"
+early_years <- eurovision |> 
+  group_by(artist_country) |> 
+  summarize(first_year = min(year)) |> 
+  mutate(maturity = first_year + 5)
+
+# mark whether a country was in the bottom third for each row
+rags_to_riches <- eurovision |> 
+  left_join(loser_cutoffs, by = 'year') |> 
+  mutate(loser = rank >= bottom_third) |> 
+  left_join(early_years, by = 'artist_country') |> 
+  mutate(is_early_year = year >= first_year & year < maturity) |> 
+  select(-first_year, -maturity)
+
+# filter just to grand final...not sure what the section is exactly
+rags_to_riches <- rags_to_riches |> 
+  filter((is_early_year | year > 2022-5) & section == 'grand-final') |> 
+  group_by(artist_country, is_early_year) |> 
+  summarize(num_losses = sum(loser, na.rm = TRUE))
+
+rags_to_riches |> 
+  mutate(is_early_year = if_else(is_early_year, 'Early', 'Late')) |> 
+  pivot_wider(names_from = is_early_year, values_from = num_losses) |> 
+  replace_na(list(Early = 0)) |> 
+  filter(Early > Late)
+```
+
+That was a lot of work! And all to find a major shortcoming of my knowledge of Eurovision --- I didn't realize this competition
+had multiple rounds!
+
+OK, that question is a bust.
+
+## Voter Bias
+
+Alright, one final try at this week's tidy tuesday on a topic I know nothing about.
+
+Unfortunately, there's not really any documentation on this "duplicate" column,
+so I'll drop anything with a value in there.
+
+```{r}
+votes |> 
+  mutate(self_vote = from_country == to_country) |> 
+  filter(self_vote)
+```
+Ah. The duplicate column is because country voters cannot vote for themselves.
+
+## Conculsion
+Well, I hope you enjoyed this exercise of "Futility three ways". In the interest
+of practicing in public I'll still post this, but obviously no real plots came out
+of it. Some of the tricks from the "Rags to Riches" section are probably still interesting,
+though! And the main lesson here is to cut your losses if you're in over your head.
