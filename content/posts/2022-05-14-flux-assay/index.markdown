@@ -138,8 +138,6 @@ processed %>%
 
 <img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" />
 
-![initial plot](init-plot.png)
-
 OK, there's some obvious annoyances here. Most obviously, the buffer control is
 in its own facet instead of paired with each experimental plot. Second, we'd like
 to be able to highlight where each plate/reagent is added. And finally, the ENaC
@@ -185,9 +183,7 @@ processed %>%
   facet_grid(cols = vars(Lipids))
 ```
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" />
-
-![Add plate backgrounds](with-plate-bg.png)
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" />
 
 That's much better. But this plot makes it look like we know what's happening when
 the plates are out and we're adding reagents, which of course we don't. We can
@@ -215,9 +211,7 @@ processed %>%
   facet_grid(cols = vars(Lipids))
 ```
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" />
-
-![Separate the plate lines](group_aes.png)
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" />
 
 Still not happy with that. I'd like some dotted lines to guide the eye between
 the plates.
@@ -286,9 +280,7 @@ processed %>%
   facet_grid(cols = vars(Lipids))
 ```
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-11-1.png" width="672" />
-
-![Add dotted joining lines](joiners.png)
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" />
 
 I like the structure of the plot. Now it's just labeling and coloring by increasing
 ENaC. I also think the lines look better if they're a bit thicker. We should
@@ -359,8 +351,6 @@ processed %>%
   )
 ```
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-13-1.png" width="672" />
-
-![Final plot](final-plot.png)
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-9-1.png" width="672" />
 
 Clearly, in this case, the assay didn't work, but I'm happy with the plots!

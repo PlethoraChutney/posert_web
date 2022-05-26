@@ -1,0 +1,90 @@
+---
+title: Tidy Tuesday - Why bother
+author: Rich Posert
+date: '2022-05-26'
+slug: []
+categories: ['Data Visualization']
+tags: ['TidyTuesday']
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+It's hard to focus on doing anything at all, really. I don't know anyone who thinks
+the world will improve, without relying on (quite literally) divine intervention
+or a more embarrassing belief in the "democratic process" under which we toil.
+
+```{r data-import}
+# Uhh, import the data.
+
+library(tidyverse)
+full_tt_dataset <- tidytuesdayR::tt_load('2022-05-24')
+
+raw_sevens <- full_tt_dataset$sevens
+raw_fifteens <- full_tt_dataset$fifteens
+
+glimpse(raw_sevens)
+```
+
+I think the thing that's most galling is the insistence, in the face of nearly
+unlimited evidence to the contrary, that *more* guns and *more* cops will make us
+safer. That making our schools prisons with armed SWAT teams patrolling them
+in full tactical gear will build the society we want. That giving teachers weapons
+will make the already-questionable hierarchy between student and teacher anything
+but more menacing.
+
+```{r}
+# I wonder if there's something interesting in margins
+raw_sevens |> 
+  ggplot(aes(margin)) +
+  theme_minimal() +
+  geom_density()
+```
+
+
+Here in Portland, our chief of police
+[put a high school girl in a headlock and handcuffed her](https://www.portlandmercury.com/blogtown/2020/06/08/28519546/portland-police-chief-jami-resch-resigns)
+for talking back to the dean.
+
+```{r}
+# I guess, let's maybe look at who ties the most often
+draws <- raw_sevens |> 
+  filter(margin == 0) |> 
+  pivot_longer( # I don't care who was team 1 and who was team 1, just that they both tied
+    cols = c('team_1', 'team_2'),
+    names_to = 'team',
+    names_prefix = 'team_', # not that we're going to use this column, but let's be neat
+    values_to = 'Country') |> 
+  count(Country) |> 
+  rename('Draws' = n) |> 
+  arrange(-Draws)
+
+draws
+```
+
+I was not really prepared for how often in my adult life the right thing to do, in so many ways and in so
+many places, would be extremely obvious and how often people in power would deny
+it.
+
+```{r}
+# Maybe funny to see the relationship between tying and winning? My heart's not
+# really in this.
+
+raw_sevens |> 
+  left_join(draws, by = c('team_1' = 'Country')) |> 
+  replace_na(list(Draws = 0)) |>  # countries who never draw should be 0
+  filter(winner == team_1) |> 
+  group_by(team_1) |> 
+  summarize(Wins = n(), Draws = mean(Draws)) |> 
+  ggplot(aes(Draws, Wins)) +
+  theme_minimal() +
+  geom_jitter(width = 0.1) +
+  labs(
+    x = 'Times a game has resulted in a draw',
+    y = 'Total team wins',
+    title = 'Whatever'
+  )
+```
+
+I doubt it can be like this forever, but I don't know whether to anticipate or fear what comes next.

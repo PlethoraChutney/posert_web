@@ -98,10 +98,6 @@ processed %>%
   geom_line() +
   facet_grid(cols = vars(Lipids))
 ```
-```{r, include=FALSE}
-ggsave('init-plot.png', width = 6, height = 4, bg = 'white')
-```
-![initial plot](init-plot.png)
 
 OK, there's some obvious annoyances here. Most obviously, the buffer control is
 in its own facet instead of paired with each experimental plot. Second, we'd like
@@ -146,10 +142,6 @@ processed %>%
   geom_line() +
   facet_grid(cols = vars(Lipids))
 ```
-```{r, include=FALSE}
-ggsave('with-plate-bg.png', width = 6, height = 4, bg = 'white')
-```
-![Add plate backgrounds](with-plate-bg.png)
 
 That's much better. But this plot makes it look like we know what's happening when
 the plates are out and we're adding reagents, which of course we don't. We can
@@ -175,10 +167,6 @@ processed %>%
   geom_line() +
   facet_grid(cols = vars(Lipids))
 ```
-```{r, include=FALSE}
-ggsave('group_aes.png', width = 6, height = 4, bg = 'white')
-```
-![Separate the plate lines](group_aes.png)
 
 Still not happy with that. I'd like some dotted lines to guide the eye between
 the plates.
@@ -233,10 +221,6 @@ processed %>%
   geom_line() +
   facet_grid(cols = vars(Lipids))
 ```
-```{r, include=FALSE}
-ggsave('joiners.png', width = 6, height = 4, bg = 'white')
-```
-![Add dotted joining lines](joiners.png)
 
 I like the structure of the plot. Now it's just labeling and coloring by increasing
 ENaC. I also think the lines look better if they're a bit thicker. We should
@@ -305,9 +289,5 @@ processed %>%
     subtitle = '1:200 no-PIP outlier removed'
   )
 ```
-```{r, include=FALSE}
-ggsave('final-plot.png', width = 6, height = 4, bg = 'white')
-```
-![Final plot](final-plot.png)
 
 Clearly, in this case, the assay didn't work, but I'm happy with the plots!
