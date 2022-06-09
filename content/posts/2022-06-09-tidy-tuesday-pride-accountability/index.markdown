@@ -195,7 +195,7 @@ abbott |>
 <img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" />
 
 This is very against my nature, but I kind of want to make a donut chart and put
-Abbott's stupid face right in the middle. I read a (paper recently)[https://kosara.net/papers/2016/Skau-EuroVis-2016.pdf]
+Abbott's stupid face right in the middle. I read a [paper recently](https://kosara.net/papers/2016/Skau-EuroVis-2016.pdf)
 showing that people are not as bad at reading pie and donut charts as I had recently
 thought! Fun.
 
