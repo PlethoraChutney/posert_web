@@ -1,0 +1,213 @@
+---
+title: Portland Building Footprints
+author: Rich Posert
+date: '2022-06-25'
+slug: []
+categories: ['Data Visualization']
+tags: []
+cover:
+  image: 'cover.png'
+  alt: 'Every building in Portland, colored by the decade in which it was constructed.'
+  relative: true
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+This post is inspired, as much of my data visualization is, by
+[Kieran Healy](https://kieranhealy.org/blog/archives/2022/06/23/manhattan-building-heights/).
+A day or two ago he posted these really beautiful maps of Manhattan and Brooklyn,
+with building footprints colored by height or building age. They're really quite
+beautiful, and I thought I'd try the same thing for Portland.
+
+Lucky for me, Portland's GIS group makes a huge trove of data available online,
+including
+[building footprints](https://gis-pdx.opendata.arcgis.com/datasets/PDX::building-footprints/explore).
+The footprint data includes both the year the building was constructed as well as
+the min/max/av height, so we've got everything we need!
+
+We'll use the wonderful `sf` library in addition to the usual suspects.
+
+```{r}
+library(tidyverse)
+library(sf)
+```
+
+First, we can read in the rather large building footprints shapefile.
+
+```{r read-footprints, cache=TRUE}
+# Data is already downloaded and stored locally
+footprints <- st_read('big_data/Building_Footprints/')
+```
+
+One thing I noticed is that this shapefile includes buildings outside what I
+think people would typically recognize as Portland. Also, these buildings further
+out look...odd
+
+![Buildings well east of Portland on Highway 26](far-out.png)
+
+So, let's filter to just shapes inside the traditional borders of Portland. To
+do that, let's load up another shapefile from Portland's GIS team, the border of
+the city. We'll need that eventually anyway if we're to slavishly recreate the original.
+
+```{r read-border, cache=TRUE}
+border <- st_read('big_data/City_Boundaries/') |> 
+  filter(CITYNAME == 'Portland')
+```
+
+And if we take a look to make sure we got the right border:
+
+```{r border-plot}
+border |> 
+  ggplot() +
+  theme_void() +
+  geom_sf(fill = NA, color = 'black')
+```
+
+Looks good. If you have never looked at the true political borders of Portland
+you may, like me, become obsessed with [Maywood Park](https://en.wikipedia.org/wiki/Maywood_Park,_Oregon).
+The 850-person city incorporated to prevent I-205's construction through their
+neighborhood. Although I agree with that goal, we probably are after it for
+different reasons.
+
+Anyway, let's now just get building footprints inside the border. This one takes
+a long time.
+
+```{r filter-footprints, cache=TRUE}
+filter_feet <- st_filter(footprints, border, .predicate = st_intersects)
+```
+
+Hopefully that worked. Let's see:
+
+```{r check-filter, cache=TRUE}
+filter_feet |> 
+  ggplot() +
+  geom_sf(data = border, fill = NA, color = 'black') +
+  geom_sf()
+```
+
+Awesome. That's awesome. I love when things work! From here it should actually
+be pretty easy to finish up. I'll use the default viridis color scale instead of
+what looks to me like plasma since it more closely matches the Portland flag.
+
+```{r plot-by-height, cache=TRUE, cache.extra = 2}
+filter_feet |> 
+  filter(!is.na(AVG_HEIGHT), BLDG_STAT != 'PERMIT-DEMOLITION') |> 
+  mutate(AVG_HEIGHT = AVG_HEIGHT - AVG_HEIGHT %% 50 + 50) |> 
+  mutate(AVG_HEIGHT = case_when(
+    AVG_HEIGHT > 400 ~ '>400 ft',
+    AVG_HEIGHT <= 50 ~ '<50 ft',
+    TRUE ~ paste(as.character(AVG_HEIGHT), 'ft'))) |> 
+  mutate(AVG_HEIGHT = fct_relevel(AVG_HEIGHT, '<50 ft')) |> 
+  mutate(AVG_HEIGHT = fct_relevel(AVG_HEIGHT, '>400 ft', after = Inf)) |> 
+  ggplot() +
+  theme_void() +
+  theme(
+    panel.background = element_rect(fill = '#1F0026', color = NA),
+    plot.background = element_rect(fill = '#1F0026', color = NA),
+    text = element_text(color = '#B6C4A3')
+  ) +
+  guides(
+    fill = guide_legend(
+      override.aes = list('color' = NA),
+      reverse = TRUE
+    )
+  ) +
+  geom_sf(data = border, fill = NA, color = '#B6C4A3') +
+  geom_sf(aes(fill = AVG_HEIGHT), color = NA) +
+  scale_fill_viridis_d() +
+  labs(
+    fill = 'Average Height (ft)'
+  )
+
+ggsave('big-height-map.pdf', width = 20, height = 20)
+```
+
+Nice! Although I'd like to use `MAX_HEIGHT`, many footprints are missing that info.
+
+Let's see what a recreation of
+Healy's other map, "Buildings by decade", looks like:
+
+```{r initial-year-plot, cache=TRUE, cache.extra = 3}
+filter_feet |> 
+  filter(!is.na(YEAR_BUILT)) |> 
+  mutate(YEAR_BUILT = YEAR_BUILT - (YEAR_BUILT %% 10)) |> 
+  filter(YEAR_BUILT != 0) |> 
+  mutate(YEAR_BUILT = if_else(
+    YEAR_BUILT <= 1950,
+    "1840s--1950s",
+    paste0(as.character(YEAR_BUILT), 's'))
+  ) |> 
+  ggplot() +
+  theme_void() +
+  theme(
+    panel.background = element_rect(fill = '#1F0026', color = NA),
+    plot.background = element_rect(fill = '#1F0026', color = NA),
+    text = element_text(color = '#B6C4A3')
+  ) +
+  guides(
+    fill = guide_legend(
+      override.aes = list('color' = NA),
+      reverse = TRUE
+    )
+  ) +
+  geom_sf(data = border, fill = NA, color = '#B6C4A3') +
+  geom_sf(aes(fill = YEAR_BUILT), color = NA) +
+  scale_fill_viridis_d() +
+  labs(
+    fill = 'Decade Built'
+  )
+```
+
+...2100s?
+
+```{r future-buildings}
+filter_feet |> filter(YEAR_BUILT > 2022) |> select(YEAR_BUILT)
+```
+
+Huh...probably errors. Meant to be "2016" I would assume. Let's drop those.
+
+```{r final-year-plot, cache=TRUE, cache.extra = 3}
+filter_feet |> 
+  filter(!is.na(YEAR_BUILT), YEAR_BUILT <= 2022) |> 
+  mutate(YEAR_BUILT = YEAR_BUILT - (YEAR_BUILT %% 10)) |> 
+  filter(YEAR_BUILT != 0) |> 
+  mutate(YEAR_BUILT = if_else(YEAR_BUILT <= 1950, "1840s--1950s", paste0(as.character(YEAR_BUILT), 's'))) |> 
+  ggplot() +
+  theme_void() +
+  theme(
+    panel.background = element_rect(fill = '#1F0026', color = NA),
+    plot.background = element_rect(fill = '#1F0026', color = NA),
+    text = element_text(color = '#B6C4A3')
+  ) +
+  guides(
+    fill = guide_legend(
+      override.aes = list('color' = NA),
+      reverse = TRUE
+    )
+  ) +
+  geom_sf(data = border, fill = NA, color = '#B6C4A3') +
+  geom_sf(aes(fill = YEAR_BUILT), color = NA) +
+  scale_fill_viridis_d() +
+  labs(
+    fill = 'Decade Built'
+  )
+
+ggsave('big-year-map.pdf', width = 20, height = 20)
+```
+
+OK, now to do some final modifications in Affinity Designer. If you open these
+images in your browser you should be able to zoom in and see individual buildings
+you're interested in --- they're quite big.
+
+![Every building in Portland, colored by height](big-height-map.png)
+
+It's not surprising that our buildings have a much less dynamic height distribution
+than NYC, "urban growth boundary" be damned.
+
+![Every building in Portland, colored by construction decade](big-year-map.png)
+
+I'm glad I took this on! Good to dust off my extremely rudimentary
+geospatial skills every now and then.
