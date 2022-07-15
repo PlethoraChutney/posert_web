@@ -18,7 +18,7 @@ So, let's load up some data:
 
 
 ```r
-border <- st_read('big_data/City_Boundaries/') |> 
+border <- st_read('../2022-06-25-portland-building-footprints/big_data/City_Boundaries/') |> 
   filter(CITYNAME == 'Portland')
 ```
 
@@ -34,7 +34,7 @@ border <- st_read('big_data/City_Boundaries/') |>
 ```
 
 ```r
-footprints <- st_read('big_data/Building_Footprints/') |> 
+footprints <- st_read('../2022-06-25-portland-building-footprints/big_data/Building_Footprints/') |> 
   st_filter(border, .predicate = st_intersects)
 ```
 
