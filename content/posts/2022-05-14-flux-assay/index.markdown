@@ -5,6 +5,10 @@ date: '2022-05-14'
 slug: []
 categories: ['Data Visualization']
 tags: []
+cover:
+  image: 'final-plot.png'
+  alt: 'A plot of a sodium flux assay which, unfortunately, did not work.'
+  relative: true
 ---
 
 

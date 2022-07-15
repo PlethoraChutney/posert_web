@@ -5,6 +5,10 @@ date: '2022-05-15'
 slug: []
 categories: ['Recipes']
 tags: []
+cover:
+  image: 'bagel-cover.png'
+  alt: 'A picture of an everything bagel I baked.'
+  relative: true
 ---
 
 ![bagel pic](bagel-cover.png)

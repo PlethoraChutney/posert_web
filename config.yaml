@@ -81,9 +81,11 @@ params:
       url: "https://twitter.com/posertInLab"
     - name: github
       url: "https://github.com/PlethoraChutney"
+    - name: cv
+      url: 'https://resume.posertinlab.com'
 
   cover:
-    hidden: true # hide everywhere but not in structured data
+    hidden: false # hide everywhere but not in structured data
     hiddenInList: true # hide on list pages and home
     hiddenInSingle: true # hide on single page
 
