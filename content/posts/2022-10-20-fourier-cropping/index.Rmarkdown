@@ -1,0 +1,860 @@
+---
+title: Fourier Cropping
+author: Rich Posert
+date: '2022-10-20'
+slug: []
+categories: ['Explainers']
+tags: ['cryoEM', 'Image Processing', 'Math']
+math: mathjax
+cover:
+  image: 'cover.png'
+  alt: 'An aliased wave.'
+  relative: true
+---
+
+```{r setup, include=FALSE}
+suppressMessages(suppressWarnings(library(tidyverse)))
+knitr::opts_chunk$set(
+  fig.width = 8, fig.height = 5, echo=FALSE
+)
+```
+
+
+Fourier cropping can be a bit confusing, especially because there aren't great
+examples of what it all means online. I thought I'd make a few examples here.
+
+## TLDR
+
+When you scale an image from 100 pixels to 20 pixels wide, you're sampling the same
+image five times less frequently. This means there are many freuqncies (resolutions)
+which you can no longer accurately represent. Rather than just "going away",
+these frequencies add an unreal, lower frequency wave to your image. Fourier cropping
+prevents this from happening.
+
+## Sampling
+
+Let's start with a simple sine wave. We'll sample this sine wave at one hundred
+points from 0 to 2&pi;:
+
+```{r}
+sine_wave <- tibble(
+  x = seq(0, 1-0.01, 0.01) * 2 * pi,
+  y = sin(x)
+)
+
+sine_wave |> 
+  head() |> 
+  mutate(
+    x = round(x, digits = 4),
+    y = round(y, digits = 4)
+  ) |> 
+  mutate(x = as.character(x), y = as.character(y)) |> 
+  add_row(x = '...', y = '...') |>
+  gt::gt()
+```
+
+We live in a discrete world, so we necessarily represent waves by taking a
+discrete number of *samples* and interpolating between them. In an image,
+the samples would be pixels. If we plot the samples, they look like this:
+
+```{r}
+sine_wave |> 
+  ggplot(aes(x, y)) +
+  theme_void() +
+  geom_line()
+```
+
+It looks nice, which should be no surprise. It's quite well sampled.
+What does it look like if we take one of every ten samples?
+
+```{r}
+last_plot() +
+  geom_line(
+    data = filter(sine_wave, row_number() %% 10 == 1),
+    color = 'blue',
+    size = 2
+  )
+```
+
+The blue line doesn't look as good, but the overall shape is the same. And now
+we can represent the curve in 1/10th the space. In fact, when we do that, the
+curve looks much less choppy:
+
+```{r, fig.width=0.8, fig.height=0.5}
+last_plot()
+```
+
+Fundamentally, when we resize an image (or a graph of a wave), we're reducing how often we sample
+the subject of that image. We're representing the same *physical object* with
+fewer pixels. With something as simple as a single frequency sine
+wave, it's not that difficult. But what happens if we add two sine waves together?
+
+```{r}
+sine_wave <- sine_wave |> 
+  mutate(higher_freq = 0.3 * sin(3 * x), sum_wave = y + higher_freq) 
+
+sine_wave |> 
+  ggplot(aes(x, sum_wave)) +
+  theme_void() +
+  geom_line()
+```
+
+OK! What if we now take every tenth sample of that?
+
+```{r}
+last_plot() +
+  geom_line(
+    data = filter(sine_wave, row_number() %% 10 == 1),
+    color = 'blue',
+    size = 2
+  )
+```
+
+OK, it looks choppy again, and the higher frequency component (the little humps
+in the larger sine wave) seems to be damaged more than the lower frequency
+component. But when we display it at a tenth the size, it still looks okay:
+
+```{r, fig.width=0.8, fig.height=0.5}
+last_plot()
+```
+
+Remember that when we resample, we're simulating what happens automatically
+when you display the *same image* using *fewer pixels*. I'm just showing it at the
+same size so it's easier to see what's going on.
+
+## Aliasing
+
+In the cases above, even when we were sampling down by 10, we still had enough
+pixels to more-or-less accurately represent the waves involved. What happens if
+we *don't* have room?
+
+Below is a wave which cycles five times every cm:
+
+```{r}
+fast_wave <- tibble(
+  x = seq(0, 1, length.out = 100),
+  y = sin(2 * pi * 5 * x)
+)
+
+fast_wave |> 
+  ggplot(aes(x, y)) +
+  theme_minimal() +
+  geom_line() +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.2)) +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  )
+```
+
+Another way to think of this "image" of this sine wave is that we've sampled it
+*twenty times per cycle*:
+
+```{r}
+fast_wave |> 
+  filter(x <=0.2) |> 
+  ggplot(aes(x, y)) +
+  theme_minimal() +
+  geom_point() +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  )
+```
+
+Instead of thinking about samples along a wave, let's instead think about pixels
+on a detector. The two representations are identical, but it makes it
+a bit easier to remember we're talking about taking *static samples* at a *fixed spacing*
+along a signal:
+
+```{r}
+fast_wave |> 
+  filter(x <=0.2) |> 
+  ggplot(aes(x, y)) +
+  theme_minimal() +
+  geom_step() +
+  labs(
+    x = 'Centimeters',
+    y = 'Pixel value'
+  )
+```
+
+In every cm, we have 100 pixels. This means our pixel size is 0.1 mm. Let's look
+at what happens when we try to represent waves with higher and higher frequencies:
+
+```{r}
+make_wave <- function(freq) {
+  tibble(
+    x = seq(0, 1, length.out = 100),
+    y = sin(2 * pi * freq * x)
+  )
+}
+
+multi_freq <- tibble(
+  freq = c(0.1, 0.2, 0.4, 0.6, 0.8, 0.9, 2) * 100
+) |> 
+  mutate(wave = map(freq, make_wave)) |> 
+  unnest(wave)
+
+multi_freq |> 
+  ggplot(aes(x, y)) +
+  theme_minimal() +
+  geom_step() +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  ) +
+  facet_grid(rows = vars(freq)) +
+  theme(
+    axis.text.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )
+```
+
+Whoa!! What's going on here? The wave with a true frequency of 200 cycles per
+centimeter looks like it's only cycling twice per centimeter! Also, let's take
+a closer look at the waves cycling at 10 and 90 cm$^{-1}$:
+
+```{r}
+multi_freq |> 
+  filter(freq %in% c(10, 90)) |> 
+  ggplot(aes(x, y)) +
+  geom_step() +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  ) +
+  facet_grid(rows = vars(freq)) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )
+```
+
+They look almost identical! But if we compare the true waves, not just what our pixels
+detected:
+
+```{r, fig.height = 2.5}
+ggplot(data = NULL) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 10 * x)),
+    xlim = c(0, 0.1),
+    n = 1e5
+  ) +
+  labs(
+    x = 'Centimeters',
+    y = 'Value',
+    title = '10 cycles/cm'
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )
+
+ggplot(data = NULL) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 90 * x)),
+    xlim = c(0, 0.1),
+    n = 1e5
+  ) +
+  labs(
+    x = 'Centimeters',
+    y = 'Value',
+    title = '90 cycles/cm'
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )
+```
+
+These are clearly different waves! Here's where the pixel size comes in --- remember
+we're only "checking" the value of the wave over the width of our pixel. If we only
+update the value of the wave when we move to a new pixel:
+
+```{r}
+last_plot() +
+  geom_step(
+    data = tibble(
+      # remember 1/100 is the pixel size
+      x = seq(0, 0.1, by = 1/100),
+      # and 90 is the frequency
+      y = sin(2 * pi * 90 * x)
+    ),
+    aes(x, y),
+    size = 1
+  ) +
+  geom_point(
+    data = tibble(
+      # remember 1/100 is the pixel size
+      x = seq(0, 0.1, by = 1/100),
+      # and 90 is the frequency
+      y = sin(2 * pi * 90 * x)
+    ),
+    aes(x, y),
+    size = 3
+  )
+```
+
+Ah hah! Because we're sampling this fast wave so infrequently, the points happen
+to line up and look like a wave of a much much lower frequency! This is called
+**aliasing**.
+
+For any wave sampled at a finite frequency, there are actually an
+infinite number of waves which could have given rise to the exact same sample
+values. These are called *aliases*. One way to think about aliasing is to imagine
+the Fourier transform of your signal, rather than the signal itself. Any signal
+with a frequency **greater than half your sampling frequency** will "fold over"
+to the same value on the other side of half your sampling frequency. This critical
+"folding point" is the Nyquist frequency.
+
+For instance, in our case, we're sampling 100 times per cm, so our Nyquist frequency
+is 50/cm. Our 10/cm wave is well below that, so it is unchanged. However, the
+90/cm wave is 1 + 0.8 the Nyquist frequency, and it "folds over" to 1 - 0.8 Nyquist,
+which is 10/cm.
+
+```{r, fig.height=2.5}
+tibble(
+  x = c(0.2, 1.8) * 100,
+  y = c(0, 0)
+) |> 
+  ggplot(aes(x, y)) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    panel.grid.major.y = element_blank()
+  ) +
+  scale_x_continuous(breaks = seq(0, 200, by = 20)) +
+  labs(x = 'Frequency (% Nyquist)') +
+  geom_vline(xintercept = 100, linetype = 'dashed') +
+  geom_point() +
+  expand_limits(x = c(0, 200), y = c(0, 1)) +
+  geom_curve(
+    data = tibble(
+        x = 175,
+        xend = 25,
+        y = 0.1,
+        yend = 0.1
+    ),
+    aes(xend = xend, yend = yend),
+    arrow = arrow(type = 'closed'),
+    ncp = 30
+  ) +
+  ylab('')
+```
+
+As another example, let's look at the addition of two waves. I'll
+go back to representing samples as points, since the graph is less busy that way.
+
+```{r}
+ggplot(data = NULL) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 10 * x)),
+    xlim = c(0, 0.1),
+    n = 1e5,
+    color = 'grey'
+  ) +
+  geom_function(
+    fun = (\(x) 0.3 * sin(2 * pi * 90 * x)),
+    xlim = c(0, 0.1),
+    n = 1e5,
+    color = 'grey'
+  ) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 10 * x) + 0.3 * sin(2 * pi * 90 * x)),
+    xlim = c(0, 0.1),
+    n = 1e5,
+    size = 1
+  ) +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )
+```
+
+I've added 10/cm and 90/cm waves (in grey) together to get our final wave in black.
+What happens if we sample this wave with a Nyquist frequency of 50/cm?
+
+```{r}
+ggplot(data = NULL) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 10 * x) + 0.3 * sin(2 * pi * 90 * x)),
+    xlim = c(0, 0.1),
+    n = 1e5
+  ) +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
+  geom_point(
+    data = tibble(
+      # remember 1/100 is the pixel size
+      x = seq(0, 0.1, by = 1/100),
+      # and 90 is the frequency
+      y = sin(2 * pi * 10 * x) + 0.3 * sin(2 * pi * 90 * x)
+    ),
+    aes(x, y),
+    size = 3
+  ) +
+  geom_line(
+    data = tibble(
+      # remember 1/100 is the pixel size
+      x = seq(0, 0.1, by = 1/100),
+      # and 90 is the frequency
+      y = sin(2 * pi * 10 * x) + 0.3 * sin(2 * pi * 90 * x)
+    ),
+    aes(x, y),
+    size = 1
+  )
+```
+
+The 90/cm wave has folded over the Nyquist frequency, aliasing from 1 + 0.8 Nyquist (90/cm)
+to 1 - 0.8 Nyquist (10/cm), so the sampled wave looks
+like a single 10/cm wave! Interestingly, even though we're adding two waves,
+the sampled wave looks like it has a lower amplitude. This is becasue the phase
+of a flipped wave is also flipped to be negative, so it subtracts from the
+unflipped wave.
+
+```{r, fig.height=3}
+tibble(
+  x = c(0.2, 0.2, 1.8) * 100,
+  yend = c(1, 0.7, 0.3),
+  y = c(0, 1, 0),
+  flip = c('un', 'fl', 'un')
+) |> 
+  ggplot(aes(x, y)) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.y = element_blank(),
+    legend.position = 'none'
+  ) +
+  scale_x_continuous(breaks = seq(0, 200, by = 20)) +
+  labs(
+    x = 'Frequency (% Nyquist)',
+    y = 'Amplitude'
+  ) +
+  geom_vline(xintercept = 100, linetype = 'dashed') +
+  geom_hline(yintercept = 0) +
+  geom_segment(
+    aes(xend = x, yend = yend, y = y, color = flip),
+    arrow = arrow(type = 'closed')
+  ) +
+  expand_limits(x = c(0, 200), y = c(0, 1)) +
+  geom_curve(
+    data = tibble(
+        x = 175,
+        xend = 25,
+        y = 0.25,
+        yend = 0.67
+    ),
+    aes(xend = xend, yend = yend),
+    arrow = arrow(type = 'closed'),
+    ncp = 30,
+    curvature = -0.2
+  )
+```
+
+In fact, if we used a 10/cm and 90/cm wave of the same amplitude:
+
+```{r}
+ggplot(data = NULL) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 10 * x)),
+    xlim = c(0, 0.1),
+    n = 1e5,
+    color = 'grey'
+  ) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 90 * x)),
+    xlim = c(0, 0.1),
+    n = 1e5,
+    color = 'grey'
+  ) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 10 * x) + sin(2 * pi * 90 * x)),
+    xlim = c(0, 0.1),
+    n = 1e5,
+    size = 1
+  ) +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.x = element_blank()
+  ) +
+  geom_point(
+    data = tibble(
+      # remember 1/100 is the pixel size
+      x = seq(0, 0.1, by = 1/100),
+      # and 90 is the frequency
+      y = sin(2 * pi * 10 * x) + sin(2 * pi * 90 * x)
+    ),
+    aes(x, y),
+    size = 3
+  )
+```
+
+Our samples line up exactly at 0! What happens if we use a 110/cm wave, which is
+2.1 times Nyquist, instead of 90/cm?
+
+```{r}
+ggplot(data = NULL) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 10 * x)),
+    xlim = c(0, 0.1),
+    n = 1e5,
+    color = 'grey'
+  ) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 110 * x)),
+    xlim = c(0, 0.1),
+    n = 1e5,
+    color = 'grey'
+  ) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 10 * x) + sin(2 * pi * 110 * x)),
+    xlim = c(0, 0.1),
+    n = 1e5,
+    size = 1
+  ) +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.x = element_blank()
+  ) +
+  geom_point(
+    data = tibble(
+      # remember 1/100 is the pixel size
+      x = seq(0, 0.1, by = 1/100),
+      # and 90 is the frequency
+      y = sin(2 * pi * 10 * x) + sin(2 * pi * 110 * x)
+    ),
+    aes(x, y),
+    size = 3
+  )
+```
+
+Now it looks like a 10/cm wave with an amplitude of two! The 110/cm wave has
+its phase flipped when it crosses each integer multiple of the Nyquist frequency.
+So first it aliases to a 90/cm wave with flipped phase (flipping from 2 + 0.2 Nyquist
+to 2 - 0.2 Nyquist), then a 10/cm wave with the same phase (flipping from 1 + 0.8
+Nyquist to 1 - 0.8 Nyquist).
+
+## cryoEM Image Processing
+
+That's fine, but what does this all have to do with cryoEM? Well, remember ages
+ago when I said that
+
+> when we resize an image (or a graph of a wave), we're reducing how often we sample
+the subject of that image. We're representing the same *physical object* with
+fewer pixels.
+
+This means that when we take an image and scale it down to make processing faster,
+we're inherently changing the sampling frequency as well.
+
+Let's use a sine wave as an example again. We'll sample a 5/cm wave 50 times every
+cm. That means our wave starts at 0.2 Nyquist:
+
+```{r}
+ggplot(data = NULL) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 5 * x)),
+    xlim = c(0, 1),
+    n = 1e5
+  ) +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.x = element_blank()
+  ) +
+  geom_point(
+    data = tibble(
+      # remember 1/50 is the pixel size
+      x = seq(0, 1, by = 1/50),
+      y = sin(2 * pi * 5 * x)
+    ),
+    aes(x, y),
+    size = 3
+  )
+```
+
+But suppose this is an image of a very large particle, and maybe to do some
+initial cleaning I want to make it smaller. If I just binned the particle by 8 (that is,
+took every group of 8x8 pixels and averaged them to a single pixel), that's like
+reducing the sampling rate of this wave by a factor of 8, down to 6.25/cm.
+Here's what the samples look like now:
+
+```{r}
+ggplot(data = NULL) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 5 * x)),
+    xlim = c(0, 1),
+    n = 1e5
+  ) +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.x = element_blank()
+  ) +
+  geom_point(
+    data = tibble(
+      # remember 1/100 is the pixel size
+      x = seq(0, 1, by = 1/6.25),
+      # and 90 is the frequency
+      y = sin(2 * pi * 5 * x)
+    ),
+    aes(x, y),
+    size = 3
+  )
+```
+
+Uh oh! When we scaled down the particle, the Nyquist frequency changed from
+25/cm to 3.125/cm. So the 5/cm wave is at 1 + 0.6 Nyquist now, meaning it aliases
+to the wave at 1 - 0.6 times the new Nyquist:
+
+```{r}
+ggplot(data = NULL) +
+  geom_function(
+    fun = (\(x) sin(2 * pi * 5 * x)),
+    xlim = c(0, 1),
+    n = 1e5,
+    linetype = 'dotted'
+  ) +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.x = element_blank()
+  ) +
+  geom_point(
+    data = tibble(
+      # remember 1/100 is the pixel size
+      x = seq(0, 1, by = 1/6.25),
+      # and 90 is the frequency
+      y = sin(2 * pi * 5 * x)
+    ),
+    aes(x, y),
+    size = 3
+  ) + 
+  geom_function(
+    fun = (\(x) -sin(2 * pi * 1.25 * x)),
+    xlim = c(0, 1),
+    n = 1e5
+  )
+```
+
+Remember, this happens automatically as a result of resizing the image! When we
+take 1/8th as many samples of this wave, there is **no way** to prevent this aliasing
+from happening! That's why instead of just binning our particles, we **Fourier crop**
+them.
+
+### Fourier cropping
+
+Let's take the example above, with our 5/cm wave, and add a 1/cm wave and a 3/cm wave. We'll perform
+the same binning operation, meaning we'll start with a sampling frequency of 50/cm
+and reduce it to 6.25/cm.
+
+```{r}
+
+comp_sin <- function(x) {
+  0.6 * sin(2 * pi * x) + 0.1 * sin(2 * pi * 3 * x) + 0.3 * sin(2 * pi * 5 * x)
+}
+
+data <- tibble(
+  x = seq(0, 1, length.out = 1e5),
+  y = comp_sin(x)
+)
+
+ggplot(data, aes(x, y)) +
+  geom_line() +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.x = element_blank()
+  ) +
+  geom_point(
+    data = tibble(
+      # remember 1/50 is the pixel size
+      x = seq(0, 1, by = 1/50),
+      # and 90 is the frequency
+      y = comp_sin(x)
+    ),
+    aes(x, y),
+    size = 3
+  )
+```
+
+Now, when we naively bin this image down to our smaller size, the Nyquist changes.
+The 1 and 3/cm waves are still below the new Nyquist of 3.125, but the 5/cm wave
+aliases to 1.25/cm (as above).
+
+```{r}
+data <- tibble(
+  x = seq(0, 1, length.out = 1e3),
+  y = comp_sin(x)
+)
+
+ggplot(data, aes(x, y)) +
+  geom_line(linetype = 'dashed', color = 'grey') +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.x = element_blank()
+  ) +
+  geom_point(
+    data = tibble(
+      # remember 1/50 is the pixel size
+      x = seq(0, 1, by = 1/6.25),
+      # and 90 is the frequency
+      y = comp_sin(x)
+    ),
+    aes(x, y),
+    size = 3
+  ) +
+  geom_function(
+    fun = (\(x) 0.6 * sin(2 * pi * x) + 0.1 * sin(2 * pi * 3 * x) - 0.3 * sin(2 * pi * 1.25 * x))
+  )
+ggsave('cover.png', width = 8, height = 5)
+```
+
+You can see that both the true wave $(F_R = [1, 3, 5])$ and the aliased wave
+$(F_A = [1, 1.25, 3])$ both fit the data just as well. Because there are an infinite
+number of higher-frequency waves which fit any given set of samples, reconstruction
+algorithms always take the *lowest frequency wave* which fits the samples. Generally,
+this is the right thing to do --- you wouldn't want your 1/nm "where is my particle"
+wave to look like a 1/&#8491; "where is this electron" wave.
+
+What this means for us is that if we just bin an image, it will give us **incorrect
+results**! However, if we *first* filter out any frequencies we won't be able to
+represent with the new sampling rate (in this case, just the 5/cm wave), the aliased signals won't show up.
+
+```{r}
+filtered_sin <- function(x) {
+  0.6 * sin(2 * pi * x) + 0.1 * sin(2 * pi * 3 * x)
+}
+
+ggplot(NULL) +
+  geom_function(
+    fun = comp_sin,
+    xlim = c(0, 1),
+    n = 1000,
+    linetype = 'dashed',
+    color = 'grey'
+  ) +
+  geom_function(
+    fun = filtered_sin,
+    xlim = c(0, 1),
+    n = 1000
+  ) +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.x = element_blank()
+  )
+```
+Now, this wave is clearly not *correct*, but at this sampling rate it's impossible
+to prefectly capture the true information. At at least we can sample this wave
+sufficiently to accurately represent it!
+
+```{r}
+last_plot() +
+  geom_point(
+    data = tibble(
+      # remember 1/50 is the pixel size
+      x = seq(0, 1, by = 1/6.25),
+      # and 90 is the frequency
+      y = filtered_sin(x)
+    ),
+    aes(x, y),
+    size = 3
+  )
+```
+
+And the resulting wave is much closer to the true data than the aliased wave!
+
+```{r}
+ggplot(NULL) +
+  geom_function(
+    fun = comp_sin,
+    xlim = c(0, 1),
+    n = 1000,
+    linetype = 'dashed',
+    color = 'grey'
+  ) +
+  geom_function(
+    fun = (\(x) 0.6 * sin(2 * pi * x) + 0.1 * sin(2 * pi * 3 * x) - 0.3 * sin(2 * pi * 1.25 * x)),
+    color = 'red'
+  ) +
+  geom_function(
+    fun = filtered_sin,
+    xlim = c(0, 1),
+    n = 1000,
+    size = 1
+  ) +
+  labs(
+    x = 'Centimeters',
+    y = 'Value'
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.x = element_blank()
+  )
+```
+
+## Conclusion
+
+I hope with these contrived examples, it's obvious why we scale images down in
+Fourier space, rather than real space. You can imagine in a real image, with
+thousands of frequencies of waves, the effects of binning are even more severe.
+
+To summarize:
+
+1) Discrete samples taken of a continuous signal are fit equally well by an infinite
+number of waves, related by their distance from the Nyquist frequency, which is
+half the sampling frequency (or, the Nyquist rate, which is twice the pixel size)
+2) When we bin an image, we're taking fewer samples of the same phenomenon
+3) Changing the Nyquist frequency aliases waves to lower frequency information
+which is not present in the "true" image
+4) Removing these frequencies first, in the Fourier domain, gives us a result
+that is truer to the original image.
