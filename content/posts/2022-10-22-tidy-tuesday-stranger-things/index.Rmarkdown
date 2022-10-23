@@ -1,0 +1,230 @@
+---
+title: Tidy Tuesday - Stranger Things
+author: Rich Posert
+date: '2022-10-22'
+slug: []
+categories: ['Data Visualization']
+tags: ['TidyTuesday']
+summary: "A sentiment analysis of Stranger Things caption data."
+cover:
+  image: cover-image.png
+  alt: "Circular plots of each episode's levels of sentiment in each of ten categories: anger, anticipation, disgust, fear, joy, negative, positive, sadness, surprise, and trust."
+  relative: true
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+```{r loadup}
+library(tidyverse)
+
+episodes <- read_csv('episodes.csv')
+dialogue <- read_csv('dialogue.csv')
+```
+
+I watched season 1 of Stranger Things when it came out and I quite liked it! Now
+reading the wikipedia summaries of the recent seasons it's clear there are many
+new characters, so this will be interesting.
+
+```{r first-glimpse}
+glimpse(dialogue)
+```
+
+Oh wow, this is very detailed! Crickets chirping, what fun! Dialogue makes
+me think sentiment analysis. Say it together: "How hard could it be?"
+Let's try [tidytext](https://www.tidytextmining.com/tidytext.html), mostly
+following the tutorial I've linked there. I think the first step for us
+is to remove any lines which are just stage direction.
+
+```{r dialogue-only}
+dialogue <- dialogue |> 
+  filter(!is.na(dialogue))
+```
+
+Then, we can break each line into tokens. Tokens are in our case words, since we'll
+be using unigram lexicons, but they could be groups of words ("very nice") or
+whatever. But anyway.
+
+```{r break-tokens}
+library(tidytext)
+
+dialogue <- dialogue |> 
+  unnest_tokens(word, dialogue) |> 
+  select(season, episode, line, word) |> 
+  glimpse()
+```
+
+I've dropped the columns I don't expect we'll need. You can see that all this has done
+is split up sentences by word, which we could probably have done with regex or
+whatever. But the function can make ngrams, handle tweets, etc.
+
+Next we pick a "lexicon". This is the mapping from word to sentiment, i.e., "bad"
+should map to "negative" or whatever. This is a very consequential choice. Ideally
+you'd handle things like "not bad" going to positive instead, etc., but you can
+see how that would rapidly spiral out of control and you end up with LaMDA or whatever.
+So we can use one of the lexicons provided to us by tidytext,
+[Saif Mohammad and Peter Turney](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm). I'm
+choosing this one because it assigns words not a +/- integer score, but a yes/no
+value for a whole list of categories:
+
+ * positive
+ * negative
+ * anger
+ * anticipation
+ * disgust
+ * fear
+ * joy
+ * sadness
+ * surprise
+ * trust
+ 
+and now I'm imagining one of those classic radar charts of different characters etc.
+Which was one of the suggestions of the TidyTuesday that broke this blog for a bit,
+the character emotion analysis week, becasue I fell down an "average color of image"
+rabbit hole and then my computer exploded.
+
+Anyway, downloading a lexicon. NRC requires a license for commercial use, but I
+think we're okay. This dataset was published in Saif M. Mohammad and Peter Turney. (2013), "Crowdsourcing a Word-Emotion Association Lexicon." Computational Intelligence, 29(3): 436-465.
+
+```{r download-nrc, eval=FALSE}
+nrc <- get_sentiments('nrc')
+```
+```{r sneaky-load, include=FALSE}
+load('.RData')
+```
+
+Now, to combine our two tables. I thought I'd have to do some clever list-column
+shenanigans but after thinking about it more (and looking at the tutorial lol)
+I realized that a good ol' `inner_join()` will do it all for us.
+
+```{r table-combine}
+sentiment_dialogue <- inner_join(
+  dialogue,
+  nrc,
+  by = 'word'
+) |> 
+  glimpse()
+```
+
+This is great but I'm noticing now that this dataset doesn't include......who
+spoke the line?? And I didn't filter it out earlier, I just went back and checked.
+What the hell. OK, I Just went and checked the [raw data for the first episode](https://8flix.com/assets/transcripts/s/tt4574334/Stranger-Things-transcript-101-Chapter-One-The-Vanishing-of-Will-Byers.pdf) and I think these are the captioning transcripts,
+not scripts. So for the most part the character name isn't in the data at all to
+begin with.
+
+That blows my radar chart idea out of the water, but we could maybe look at season
+or episode averages for each of our word categories and see if, for instance,
+earlier in a season the episode average for "anticipation" is higher than for others.
+
+```{r ep-averages}
+count_sentiment <- sentiment_dialogue |> 
+  group_by(episode, season) |> 
+  count(sentiment) |> 
+  glimpse()
+
+count_sentiment |> 
+  mutate(
+    season = as.character(season),
+    sentiment = str_to_title(sentiment)
+  ) |> 
+  ggplot(aes(episode, n)) +
+  theme_minimal() +
+  geom_line(aes(color = season, group = season), size = 1) +
+  facet_wrap(vars(sentiment), ncol = 3, scales = 'free') +
+  MetBrewer::scale_color_met_d('Greek') +
+  scale_x_continuous(breaks = seq(1, 15, by = 2)) +
+  labs(
+    x = 'Episode number',
+    y = 'Word count',
+    color = 'Sentiment'
+  )
+```
+
+Pretty noisy and pretty flat! It is interesting to note that season 4 seems to have
+a much higher emotional sentiment across the board. That makes me wonder what these
+would look like if we connected them all and looked at the show as a whole, rather
+than season-by-season. Kinda like those [climate spirals](https://www.climate-lab-book.ac.uk/spirals/)
+that don't give me a sense of foreboding at all.
+
+```{r}
+count_sentiment |> 
+  ggplot(aes(episode, n, color = season, group = season)) +
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    panel.grid.major = element_blank(),
+    legend.position = 'none'
+  ) +
+  geom_line() +
+  facet_wrap(vars(sentiment), ncol = 5) +
+  coord_polar()
+```
+
+I don't like that the lines don't join because of the different numbers of
+episodes in each season. We can fix that by using a proportional scaling
+of the x axis.
+
+```{r, fig.width=6, fig.height=6}
+episodes |> 
+  group_by(season) |> 
+  filter(episode == max(episode)) |> 
+  select(season, 'max_ep' = episode) |> 
+  right_join(count_sentiment, by = 'season') |> 
+  mutate(prop_season = episode / max_ep) |> 
+  mutate(sentiment = paste0(str_to_title(sentiment), '\n')) |> 
+  ggplot(aes(prop_season, n, color = season, group = season)) +
+  theme_void() +
+  theme(
+    legend.position = 'none'
+  ) +
+  geom_line(size = 1, linejoin = 'round', lineend = 'round') +
+  facet_wrap(vars(sentiment), ncol = 4) +
+  coord_polar() +
+  MetBrewer::scale_color_met_c('OKeeffe2')
+```
+
+I think these are really fun! I like that each season ends more-or-less
+where it started on each sentiment, but then the next season bumps it up a bit.
+Just for curiosity sake, what would this look like on a log scale?
+
+```{r, fig.width=6, fig.height=6}
+last_plot() +
+  scale_y_log10()
+```
+
+Huh, that's not bad either. Makes the jump in season 4 less obvious, but it shows
+something I hadn't noticed before, which is just now much more surprise is in season 4
+compared to the other evaluations.
+
+One thing I'm worried about now is that even though each season has the same-ish
+number of episodes, season 4 might just have way more *words* than the other seasons.
+Let's make sure that's not what's happening:
+
+```{r, fig.width=6, fig.height=6}
+count_sentiment <- count_sentiment |> 
+  group_by(episode, season) |> 
+  mutate(prop_words = n / sum(n))
+
+episodes |> 
+  group_by(season) |> 
+  filter(episode == max(episode)) |> 
+  select(season, 'max_ep' = episode) |> 
+  right_join(count_sentiment, by = 'season') |> 
+  mutate(prop_season = episode / max_ep) |> 
+  mutate(sentiment = paste0(str_to_title(sentiment), '\n')) |> 
+  ggplot(aes(prop_season, prop_words, color = season, group = season)) +
+  theme_void() +
+  theme(
+    legend.position = 'none',
+    strip.text = element_text(family = 'Poppins')
+  ) +
+  geom_line(size = 1, linejoin = 'round', lineend = 'round') +
+  facet_wrap(vars(sentiment), ncol = 4) +
+  coord_polar() +
+  MetBrewer::scale_color_met_c('OKeeffe2')
+```
+
+Ah hah! Should have known. Honestly I'm pretty happy with this as the final
+plot!
