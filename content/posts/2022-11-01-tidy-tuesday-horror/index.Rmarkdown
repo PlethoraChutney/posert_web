@@ -1,0 +1,142 @@
+---
+title: Tidy Tuesday - Horror
+author: Rich Posert
+date: '2022-11-01'
+slug: []
+categories: ['Data Visualization']
+tags: ['TidyTuesday']
+summary: A quick investiation into what horror subgenres are most popular.
+cover:
+  image: cover.png
+  alt: "Ridgelines showing the density of mean movie rating for various horror
+  subgenres"
+  relative: true
+  
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+Horror movies! Spooky.
+
+```{r loadup}
+library(tidyverse)
+
+movies <- read_csv('data/horror_movies.csv')
+
+glimpse(movies)
+```
+This is a big ol' table of all the horror movies in
+[The Movie Database](https://www.themoviedb.org/).
+Votes seem to be called Ratings on the website, and instead of the decmimal out
+of ten they're instead given on a percent scale, but whatever. Also, I'm assuming
+that when a metric is `0` it's actually `NA` (doubt any of these were
+made for free).
+
+I like that we have combination genres --- we could see what genres go well with
+horror by comparing ratings by genre. I'm going to use ratings, not 
+[popularity](https://developers.themoviedb.org/3/getting-started/popularity),
+because popularity involves a recency component that I'm not interested in 
+for this purpose.
+
+```{r}
+unnest_genres <- movies |> 
+  mutate(genre_names = str_split(genre_names, ', ')) |> 
+  unnest(genre_names)
+
+unnest_genres |> 
+  filter(genre_names != 'Horror' & vote_average != 0) |>
+  ggplot(aes(vote_average)) +
+  theme_minimal() +
+  geom_histogram(
+    aes(y = ..ncount.., fill = genre_names),
+    bins = 20
+  ) +
+  facet_wrap(vars(genre_names), ncol = 3)
+```
+
+Hard to tell with these plots, but this might be fun. Let's try another way of
+showing the data:
+
+```{r}
+library(ggridges)
+
+unnest_genres |> 
+  filter(genre_names != 'Horror' & vote_average != 0) |> 
+  mutate(genre_names = fct_reorder(
+    genre_names, vote_average, .fun = median
+    )) |> 
+  ggplot(aes(vote_average, genre_names, fill = genre_names)) +
+  theme_minimal() +
+  geom_density_ridges(
+    show.legend = FALSE
+  ) +
+  coord_cartesian(xlim = c(0,10)) +
+  scale_x_continuous(
+    breaks = 1:10
+  ) +
+  labs(
+    x = 'Rating',
+    y = 'Genre'
+  )
+
+```
+
+Let's add back in the "All horror" category to compare against:
+
+```{r, fig.height = 7.5}
+sysfonts::font_add_google("Creepster","Creepster")
+showtext::showtext_auto()
+
+red_scale <- scales::seq_gradient_pal(
+  low = '#701108',
+  high = '#F02511'
+)(seq(0,1,length.out = 18))
+red_scale <- c(red_scale, '#888888')
+
+unnest_genres |> 
+  mutate(genre_names = if_else(
+    genre_names == 'Horror',
+    'All Horror', genre_names
+  )) |> 
+  filter(vote_average != 0) |>
+  mutate(genre_names = fct_reorder(genre_names, vote_average)) |> 
+  mutate(genre_names = fct_relevel(genre_names, 'All Horror', after = Inf)) |> 
+  ggplot(aes(vote_average, genre_names, fill = genre_names)) +
+  theme_minimal() +
+  geom_density_ridges(
+    scale = 2,
+    show.legend = FALSE,
+    color = '#111111'
+  ) +
+  coord_cartesian(xlim = c(1,10)) +
+  scale_x_continuous(
+    breaks = 1:10
+  ) +
+  scale_fill_manual(
+    values = red_scale
+  ) +
+  theme(
+    plot.title.position = 'plot',
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.background = element_rect(fill = 'black'),
+    plot.background = element_rect(fill = 'black'),
+    text = element_text(
+      family = 'Creepster',
+      size = 20,
+      color = '#c2c2c2'
+    ),
+    axis.text = element_text(color = '#AAAAAA')
+  ) +
+  labs(
+    title = "If you're making a horror movie, animate it",
+    x = 'Average movie rating ',
+    y = 'Genre'
+  )
+```
+
+A fun little exercise! I also like that there's a consistent desire for people
+to give 10/10 ratings to movies at all genres, even if the median rating is a full
+point-and-a-half different! Happy Halloween!
