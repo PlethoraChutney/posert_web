@@ -79,6 +79,8 @@ params:
   socialIcons:
     - name: twitter
       url: "https://twitter.com/posertInLab"
+    - name: mastodon
+      url: "https://fediscience.org/@posertinlab"
     - name: github
       url: "https://github.com/PlethoraChutney"
     - name: cv
