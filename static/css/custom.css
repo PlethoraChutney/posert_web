@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri&family=JetBrains+Mono&family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap');
 
 .post-content img {
   display: block;
@@ -20,4 +21,32 @@ p {
 code {
   font-family: "JetBrains Mono", monospace;
   font-variant-ligatures: none;
+}
+
+aside {
+  display: none;
+  visibility: hidden;
+  float: left;
+  position: absolute;
+  margin-left: 0;
+  text-align: right;
+  margin-bottom: 1rem;
+  border-right: 3px solid #00000066;
+}
+
+aside > p {
+  color: #00000066;
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  margin-top: var(--content-gap);
+  margin-right: 1rem;
+}
+
+@media (min-width: 1200px) {
+  aside {
+    display: block;
+    visibility: visible;
+    left: calc(2.5rem * -4);
+    width: calc(2.5rem * 4);
+  }
 }
