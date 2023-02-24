@@ -2,6 +2,7 @@ baseURL: "https://blog.posertinlab.com/"
 title: Posert Blog
 paginate: 5
 theme: "hugo-PaperMod"
+ignoreFiles: ["\\.qmd$", "\\.ipynb$", "\\.py$"]
 
 enableRobotsTXT: true
 buildDrafts: false

@@ -5,3 +5,4 @@
 **/big_data/
 **/index_cache/
 .DS_Store
+public/
