@@ -26,6 +26,39 @@ set up a more maintainable infrastructure than if you do what I did, and say,
 
 ## SSH
 
+### cryoEM
+
+I recommend, if you're doing cryoEM, that you make extensive use of functions
+and aliases! Changing from thinking about "how do I want this mask to look"
+to "how do I upload this file and where does it go" is [more expensive than
+you might think](https://en.wikipedia.org/wiki/Task_switching_(psychology))!
+
+I have a bunch of aliases and functions that I use all the time.
+These time saving functions go into your `.bashrc` (or, for me, `.zshrc`).
+Particularly things that require
+me to remember paths on remote machines get aliases. For instance, I have an
+alias I use to upload a mask:
+
+```
+putmask () {
+	scp $1 posert@troll.ohsu.edu:~/masks/
+}
+```
+
+and another one I use to download cisTEM volumes and rename them:
+
+```
+getcis () {
+        scp posert@exahead1.ohsu.edu:/home/groups/BaconguisLab/posert/$1/cistem-project/Assets/Volumes/$2 $3
+}
+```
+
+I also have a more complicated (and useful) function to download, organize, and
+rename RELION jobs just by their job number, which you can check out
+[here](https://github.com/PlethoraChutney/dotfiles/blob/master/getrel).
+
+
+
 ### Tunneling
 
 If you're not familiar with the concept of a tunnel, it's a way of setting up
@@ -43,8 +76,13 @@ from my computer's port 11312 to our workstation's port 39000. This tunnel lets 
 access cryoSPARC without needing to be on the network, just by typing cryoSPARC.
 
 ```
-alias cryosparc="ssh -L 11312:localhost:39000 posert@troll.ohsu.edu"
+alias cryosparc="ssh -f -N -T -L 11312:localhost:39000 posert@troll.ohsu.edu"
 ```
+
+The `-f`, `-N`, and `-T` options send ssh to the background, stop ssh from
+running a command on the remote machine, and prevent terminal allocation respectively.
+Basically, this preserves resources and prevents you from having to open a new
+terminal window by making this ssh connection "tunnel only".
 
 ### Use .ssh/config
 
