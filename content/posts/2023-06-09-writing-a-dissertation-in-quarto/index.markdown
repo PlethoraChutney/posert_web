@@ -3,7 +3,7 @@ title: Writing a dissertation in Quarto
 author: Rich Posert
 date: '2023-06-09'
 slug: []
-categories: []
+categories: ['Guidance']
 tags: ['Writing', 'Quarto']
 ---
 
