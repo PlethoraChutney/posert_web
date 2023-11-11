@@ -5,6 +5,10 @@ date: '2023-08-29'
 slug: []
 categories: ['Recipes']
 tags: []
+cover:
+  image: baked-buns.jpg
+  alt: "Baked turmeric chilli buns."
+  relative: true
 ---
 
 [*Take me to the recipe*](#ingredients)
