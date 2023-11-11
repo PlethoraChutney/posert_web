@@ -17,7 +17,7 @@ minify:
 
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
-  title: Rich Posert, a grad student
+  title: Rich Posert - Blog
   description: "Rich's personal site"
   keywords: ['Blog', 'Portfolio']
   author: 'Rich Posert'
