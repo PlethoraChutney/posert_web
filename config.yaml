@@ -1,4 +1,4 @@
-baseURL: "https://blog.posertinlab.com/"
+baseURL: "https://blog.waldo.town/"
 title: Posert Blog
 paginate: 5
 theme: "hugo-PaperMod"
